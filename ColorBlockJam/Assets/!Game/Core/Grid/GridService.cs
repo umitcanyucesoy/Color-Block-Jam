@@ -10,7 +10,6 @@ namespace _Game.Core.Grid
         private const float Half = 0.5f;
 
         private readonly GridData _data;
-        private readonly LevelData _level;
         private Tile[,] _tiles;
         private Transform _root;
         private int _width;
@@ -20,32 +19,31 @@ namespace _Game.Core.Grid
         public int Height => _height;
         public float CellSize => _data.cellSize;
 
-        public GridService(GridData data, LevelData level)
+        public GridService(GridData data)
         {
             _data = data;
-            _level = level;
         }
 
-        public void Build()
+        public void Build(LevelData level)
         {
-            if (!_data || !_level)
+            if (!_data || !level)
             {
-                Debug.LogError("[GridService] Missing GridConfig or LevelData.");
+                Debug.LogError("[GridService] Missing GridData or LevelData.");
                 return;
             }
 
             if (_root)
                 Clear();
 
-            _width = _level.Width;
-            _height = _level.Height;
+            _width = level.Width;
+            _height = level.Height;
             _tiles = new Tile[_width, _height];
             _root = new GameObject(RootName).transform;
 
             for (int y = 0; y < _height; y++)
             for (int x = 0; x < _width; x++)
             {
-                if (_level.GetCell(x, y) == CellType.Empty)
+                if (level.GetCell(x, y) == CellType.Empty)
                     continue;
 
                 var tile = Object.Instantiate(_data.tilePrefab, _root);

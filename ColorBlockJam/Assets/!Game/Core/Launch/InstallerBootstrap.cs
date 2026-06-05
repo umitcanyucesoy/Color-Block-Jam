@@ -1,5 +1,6 @@
 using _Game.Core.Factory;
 using _Game.Core.Grid;
+using _Game.Core.Level;
 using _Game.Core.Shapes;
 using _Game.Data;
 using _Game.Services;
@@ -11,14 +12,17 @@ namespace _Game.Core.Launch
     {
         [Header("Configs")]
         [SerializeField] private GridData gridData;
-        [SerializeField] private LevelData levelData;
         [SerializeField] private ColorPalette colorPalette;
 
         [Header("Prefabs")]
         [SerializeField] private Shape shapePrefab;
 
+        [Header("Controllers")]
+        [SerializeField] private LevelController levelController;
+
         private IGridService _gridService;
         private IShapeFactory _shapeFactory;
+        private ILevelController _levelController;
 
         private void Awake()
         {
@@ -32,23 +36,28 @@ namespace _Game.Core.Launch
 
         private void OnDestroy()
         {
+            ServiceLocator.Unregister<ILevelController>();
             ServiceLocator.Unregister<IShapeFactory>();
             ServiceLocator.Unregister<IGridService>();
         }
 
         private void InstallServices()
         {
-            _gridService = new GridService(gridData, levelData);
+            _levelController = levelController;
+            
+            _gridService = new GridService(gridData);
             ServiceLocator.Register(_gridService);
 
             _shapeFactory = new ShapeFactory(shapePrefab, colorPalette, _gridService);
             ServiceLocator.Register(_shapeFactory);
+
+            _levelController.Init(_gridService, _shapeFactory);
+            ServiceLocator.Register(_levelController);
         }
 
         private void InstallGame()
         {
-            _gridService.Build();
-            _shapeFactory.BuildLevel(levelData);
+            _levelController.LoadCurrent();
         }
     }
 }

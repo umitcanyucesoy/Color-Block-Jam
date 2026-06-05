@@ -1,3 +1,4 @@
+using _Game.Data;
 using _Game.Services;
 using UnityEngine;
 
@@ -9,7 +10,7 @@ namespace _Game.Core.Grid
         int Height { get; }
         float CellSize { get; }
 
-        void Build();
+        void Build(LevelData level);
         void Clear();
 
         bool IsInside(int x, int y);
