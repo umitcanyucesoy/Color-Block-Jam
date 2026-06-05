@@ -15,16 +15,18 @@ namespace _Game.Core.Factory
         private readonly ColorPalette _palette;
         private readonly IGridService _grid;
         private readonly IPoolService _pool;
+        private readonly ShapeData _data;
 
         private readonly List<Shape> _shapes = new();
         private Transform _root;
 
-        public ShapeFactory(Shape shapePrefab, ColorPalette palette, IGridService grid, IPoolService pool)
+        public ShapeFactory(Shape shapePrefab, ColorPalette palette, IGridService grid, IPoolService pool, ShapeData data)
         {
             _shapePrefab = shapePrefab;
             _palette = palette;
             _grid = grid;
             _pool = pool;
+            _data = data;
         }
 
         public void BuildLevel(LevelData level)
@@ -60,8 +62,10 @@ namespace _Game.Core.Factory
             var material = _palette.GetMaterial(placement.color);
             var shape = _pool.Get(_shapePrefab, _root);
 
-            shape.Build(placement.definition, placement.color, placement.anchor, material, _grid.CellSize, _pool);
-            shape.transform.position = _grid.CoordToWorld(placement.anchor.x, placement.anchor.y);
+            shape.Build(placement.definition, placement.color, placement.anchor, placement.rotation, material, _grid.CellSize, _pool);
+            var world = _grid.CoordToWorld(placement.anchor.x, placement.anchor.y);
+            world.y = _data.yOffset;
+            shape.transform.position = world;
             _grid.Occupy(shape);
 
             _shapes.Add(shape);

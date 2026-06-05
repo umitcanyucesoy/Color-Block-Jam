@@ -6,7 +6,7 @@ namespace _Game.Core.Control
 {
     public interface IShapeController
     {
-        void Init(IGridService grid, DragSettings settings);
+        void Init(IGridService grid, ShapeData data);
         void Dispose();
     }
 }

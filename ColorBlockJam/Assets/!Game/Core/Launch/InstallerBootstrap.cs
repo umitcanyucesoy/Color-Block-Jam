@@ -18,7 +18,7 @@ namespace _Game.Core.Launch
         [SerializeField] private GridData gridData;
         [SerializeField] private ColorPalette colorPalette;
         [SerializeField] private PoolData poolData;
-        [SerializeField] private DragSettings dragSettings;
+        [SerializeField] private ShapeData shapeData;
 
         [Header("Prefabs")]
         [SerializeField] private Shape shapePrefab;
@@ -77,7 +77,7 @@ namespace _Game.Core.Launch
             _gridService = new GridService(gridData, _poolService);
             ServiceLocator.Register(_gridService);
 
-            _shapeFactory = new ShapeFactory(shapePrefab, colorPalette, _gridService, _poolService);
+            _shapeFactory = new ShapeFactory(shapePrefab, colorPalette, _gridService, _poolService, shapeData);
             ServiceLocator.Register(_shapeFactory);
             
             _levelController.Init(_gridService, _shapeFactory);
@@ -86,7 +86,7 @@ namespace _Game.Core.Launch
 
         private void InstallGame()
         {
-            _shapeController.Init(_gridService, dragSettings);
+            _shapeController.Init(_gridService, shapeData);
             _levelController.LoadCurrent();
         }
     }

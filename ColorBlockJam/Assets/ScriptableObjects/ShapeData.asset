@@ -9,9 +9,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c30783faafc3c4eb19472c798e8e7aef, type: 3}
-  m_Name: DragSettings
-  m_EditorClassIdentifier: Assembly-CSharp::_Game.Data.DragSettings
-  liftHeight: 0.1
+  m_Script: {fileID: 11500000, guid: c505d80deb45b4445abde28e4bb3e2c7, type: 3}
+  m_Name: ShapeData
+  m_EditorClassIdentifier: Assembly-CSharp::_Game.Data.ShapeData
+  yOffset: 0.25
+  liftHeight: 0.3
   liftDuration: 0.1
   dropDuration: 0.12

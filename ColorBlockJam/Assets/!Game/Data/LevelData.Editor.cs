@@ -67,7 +67,7 @@ namespace _Game.Data
                     if (p?.definition == null)
                         continue;
 
-                    p.definition.CollectCells(p.anchor, CellBuffer);
+                    p.definition.CollectCells(p.anchor, p.rotation, CellBuffer);
 
                     for (int c = 0; c < CellBuffer.Count; c++)
                     {

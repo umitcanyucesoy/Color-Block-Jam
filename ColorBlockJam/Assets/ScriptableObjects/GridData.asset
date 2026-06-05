@@ -13,6 +13,5 @@ MonoBehaviour:
   m_Name: GridData
   m_EditorClassIdentifier: Assembly-CSharp::_Game.Data.GridData
   tilePrefab: {fileID: 2806801672890586316, guid: df5232231fb6643ef9abcda85da41627, type: 3}
-  cellSize: 1.01
-  spacing: 0
+  cellSize: 1.05
   centered: 1

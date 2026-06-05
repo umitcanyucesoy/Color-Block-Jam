@@ -6,7 +6,7 @@ namespace _Game.Core.Shapes
     {
         protected override void Setup(Material material, float cellSize)
         {
-            var offsets = Definition.Offsets;
+            var offsets = Cells;
             units = new Unit[offsets.Count];
 
             for (int i = 0; i < offsets.Count; i++)

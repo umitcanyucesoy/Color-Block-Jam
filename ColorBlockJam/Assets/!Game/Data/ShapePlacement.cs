@@ -10,5 +10,6 @@ namespace _Game.Data
         public ShapeDefinition definition;
         public ShapeColor color = ShapeColor.None;
         public Vector2Int anchor;
+        public ShapeRotation rotation;
     }
 }

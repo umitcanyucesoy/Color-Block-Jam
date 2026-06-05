@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using _Game.Enums;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
@@ -44,13 +45,51 @@ namespace _Game.Data
             }
         }
 
-        public void CollectCells(Vector2Int anchor, List<Vector2Int> buffer)
+        public void GetRotatedOffsets(ShapeRotation rotation, List<Vector2Int> buffer)
         {
             EnsureBaked();
             buffer.Clear();
+
+            if (rotation == ShapeRotation.Rot0)
+            {
+                for (int i = 0; i < _offsets.Count; i++)
+                    buffer.Add(_offsets[i]);
+                return;
+            }
+
+            int minX = int.MaxValue, minY = int.MaxValue;
             for (int i = 0; i < _offsets.Count; i++)
-                buffer.Add(anchor + _offsets[i]);
+            {
+                var r = Rotate(_offsets[i], rotation);
+                buffer.Add(r);
+                if (r.x < minX) minX = r.x;
+                if (r.y < minY) minY = r.y;
+            }
+
+            for (int i = 0; i < buffer.Count; i++)
+                buffer[i] = new Vector2Int(buffer[i].x - minX, buffer[i].y - minY);
         }
+
+        public void CollectCells(Vector2Int anchor, ShapeRotation rotation, List<Vector2Int> buffer)
+        {
+            GetRotatedOffsets(rotation, buffer);
+            for (int i = 0; i < buffer.Count; i++)
+                buffer[i] += anchor;
+        }
+
+        public Vector2Int GetSize(ShapeRotation rotation)
+        {
+            var s = Size;
+            return rotation == ShapeRotation.Rot90 || rotation == ShapeRotation.Rot270 ? new Vector2Int(s.y, s.x) : s;
+        }
+
+        private static Vector2Int Rotate(Vector2Int o, ShapeRotation rotation) => rotation switch
+        {
+            ShapeRotation.Rot90 => new Vector2Int(-o.y, o.x),
+            ShapeRotation.Rot180 => new Vector2Int(-o.x, -o.y),
+            ShapeRotation.Rot270 => new Vector2Int(o.y, -o.x),
+            _ => o
+        };
 
         private void EnsureBaked()
         {

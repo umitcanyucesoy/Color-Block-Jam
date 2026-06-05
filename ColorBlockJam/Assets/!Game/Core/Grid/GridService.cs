@@ -103,7 +103,7 @@ namespace _Game.Core.Grid
             if (!shape || shape.Definition == null)
                 return;
 
-            shape.Definition.CollectCells(shape.Anchor, _cellBuffer);
+            shape.CollectCells(shape.Anchor, _cellBuffer);
             for (int i = 0; i < _cellBuffer.Count; i++)
             {
                 var c = _cellBuffer[i];

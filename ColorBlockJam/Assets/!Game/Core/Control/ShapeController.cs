@@ -14,16 +14,16 @@ namespace _Game.Core.Control
 
         private readonly List<Vector2Int> _buffer = new();
         private IGridService _grid;
-        private DragSettings _settings;
+        private ShapeData _data;
         private Shape _shape;
         private Vector2 _offset;
         private Vector2 _cell;
         private Vector2Int _origin;
 
-        public void Init(IGridService grid, DragSettings settings)
+        public void Init(IGridService grid, ShapeData data)
         {
             _grid = grid;
-            _settings = settings;
+            _data = data;
 
             EventBus.Subscribe<ShapeGrabbedEvent>(OnGrabbed);
             EventBus.Subscribe<ShapeDraggedEvent>(OnDragged);
@@ -50,7 +50,7 @@ namespace _Game.Core.Control
             _offset = new Vector2(pos.x - e.WorldPoint.x, pos.z - e.WorldPoint.z);
 
             _shape.transform.DOKill();
-            _shape.transform.DOMoveY(_settings.liftHeight, _settings.liftDuration);
+            _shape.transform.DOMoveY(_data.yOffset + _data.liftHeight, _data.liftDuration);
         }
 
         private void OnDragged(ShapeDraggedEvent e)
@@ -82,14 +82,16 @@ namespace _Game.Core.Control
             _grid.Occupy(_shape);
 
             _shape.transform.DOKill();
-            _shape.transform.DOMove(_grid.CoordToWorld(target.x, target.y), _settings.dropDuration);
+            var world = _grid.CoordToWorld(target.x, target.y);
+            world.y = _data.yOffset;
+            _shape.transform.DOMove(world, _data.dropDuration);
 
             _shape = null;
         }
 
         private Vector2 ClampToBounds(Vector2 cell)
         {
-            var size = _shape.Definition.Size;
+            var size = _shape.Size;
             float maxX = Mathf.Max(0, _grid.Width - size.x);
             float maxY = Mathf.Max(0, _grid.Height - size.y);
             return new Vector2(Mathf.Clamp(cell.x, 0f, maxX), Mathf.Clamp(cell.y, 0f, maxY));
@@ -106,7 +108,7 @@ namespace _Game.Core.Control
         {
             float value = xAxis ? from.x : from.y;
             float dir = Mathf.Sign(target - value);
-            if (value == target || Mathf.Approximately(dir, 0f))
+            if (Mathf.Approximately(value, target) || Mathf.Approximately(dir, 0f))
                 return value;
 
             while (Mathf.Abs(target - value) > 0.0001f)
@@ -123,7 +125,7 @@ namespace _Game.Core.Control
 
         private bool FootprintFreeContinuous(Vector2 cell)
         {
-            var offsets = _shape.Definition.Offsets;
+            var offsets = _shape.Cells;
             for (int i = 0; i < offsets.Count; i++)
             {
                 float wx = cell.x + offsets[i].x;
@@ -141,7 +143,7 @@ namespace _Game.Core.Control
 
         private bool FootprintFree(Vector2Int anchor)
         {
-            _shape.Definition.CollectCells(anchor, _buffer);
+            _shape.CollectCells(anchor, _buffer);
             for (int i = 0; i < _buffer.Count; i++)
                 if (!_grid.IsCellFree(_buffer[i].x, _buffer[i].y, _shape))
                     return false;
