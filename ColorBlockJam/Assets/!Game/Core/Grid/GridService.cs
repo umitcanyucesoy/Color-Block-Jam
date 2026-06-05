@@ -18,6 +18,7 @@ namespace _Game.Core.Grid
 
         public int Width => _width;
         public int Height => _height;
+        public float CellSize => _data.cellSize;
 
         public GridService(GridData data, LevelData level)
         {

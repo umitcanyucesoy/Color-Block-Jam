@@ -7,6 +7,7 @@ namespace _Game.Core.Grid
     {
         int Width { get; }
         int Height { get; }
+        float CellSize { get; }
 
         void Build();
         void Clear();

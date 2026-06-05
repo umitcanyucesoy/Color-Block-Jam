@@ -478,6 +478,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::_Game.Core.Launch.InstallerBootstrap
   gridData: {fileID: 11400000, guid: b9437422bacc44acfb6b06e44ed6406a, type: 2}
   levelData: {fileID: 11400000, guid: faf9a400cba714ab6840fee43f00faf3, type: 2}
+  colorPalette: {fileID: 11400000, guid: e0a9db89774024f42867fc0c734f5a5d, type: 2}
+  shapePrefab: {fileID: -1948016462316679141, guid: c0f45a4b9316946838888a9f478a353b, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
