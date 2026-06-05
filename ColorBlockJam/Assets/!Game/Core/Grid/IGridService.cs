@@ -1,3 +1,4 @@
+using _Game.Core.Shapes;
 using _Game.Data;
 using _Game.Services;
 using UnityEngine;
@@ -13,12 +14,13 @@ namespace _Game.Core.Grid
         void Build(LevelData level);
         void Clear();
 
-        bool IsInside(int x, int y);
-        bool IsInside(Vector2Int coordinate);
-
-        Tile GetTile(int x, int y);
-        bool TryGetTile(int x, int y, out Tile tile);
+        bool IsCellFree(int x, int y, Shape ignore);
+        void Occupy(Shape shape);
+        void Free(Shape shape);
 
         Vector3 CoordToWorld(int x, int y);
+        Vector3 CellToWorld(Vector2 cell);
+        Vector2 WorldToCell(Vector3 world); 
+
     }
 }

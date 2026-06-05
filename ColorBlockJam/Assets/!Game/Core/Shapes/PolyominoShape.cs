@@ -11,10 +11,10 @@ namespace _Game.Core.Shapes
 
             for (int i = 0; i < offsets.Count; i++)
             {
-                var block = Instantiate(unitPrefab, transform);
-                block.transform.localPosition = new Vector3(offsets[i].x * cellSize, 0f, offsets[i].y * cellSize);
-                block.SetMaterial(material);
-                units[i] = block;
+                var unit = pool.Get(unitPrefab, transform);
+                unit.transform.localPosition = new Vector3(offsets[i].x * cellSize, 0f, -offsets[i].y * cellSize);
+                unit.SetMaterial(material);
+                units[i] = unit;
             }
         }
     }
