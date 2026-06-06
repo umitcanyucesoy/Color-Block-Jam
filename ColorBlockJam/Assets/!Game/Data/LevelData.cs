@@ -18,6 +18,9 @@ namespace _Game.Data
         [TableMatrix(SquareCells = true, DrawElementMethod = "DrawCell", HorizontalTitle = "X", VerticalTitle = "Y")]
         [SerializeField]
         private CellType[,] cells;
+        
+        [HideInInspector, SerializeField]
+        private ShapeColor[,] cellColors;
 
         [PropertyOrder(3), PropertySpace(SpaceBefore = 12), Title("Shapes")]
         [ListDrawerSettings(ShowFoldout = true, CustomAddFunction = nameof(AddNewShape))]
@@ -28,11 +31,14 @@ namespace _Game.Data
         public int Width => cells?.GetLength(0) ?? 0;
         public int Height => cells?.GetLength(1) ?? 0;
         public CellType GetCell(int x, int y) => cells[x, y];
+        public ShapeColor GetCellColor(int x, int y) => cellColors != null && x < Width && y < Height ? 
+            cellColors[x, y] : ShapeColor.None;
 
         [Button(ButtonSizes.Medium), PropertyOrder(1), PropertySpace(SpaceBefore = 8)]
         private void ResizeMatrix()
         {
-            var resized = new CellType[width, height];
+            var resizedCells = new CellType[width, height];
+            var resizedColors = new ShapeColor[width, height]; 
 
             if (cells != null)
             {
@@ -41,10 +47,15 @@ namespace _Game.Data
 
                 for (int x = 0; x < copyX; x++)
                 for (int y = 0; y < copyY; y++)
-                    resized[x, y] = cells[x, y];
+                {
+                    resizedCells[x, y] = cells[x, y];
+                    if (cellColors != null)
+                        resizedColors[x, y] = cellColors[x, y];
+                }
             }
 
-            cells = resized;
+            cells = resizedCells;
+            cellColors = resizedColors;
         }
         
         private void AddNewShape()
@@ -60,6 +71,7 @@ namespace _Game.Data
         private void EnsureMatrix()
         {
             cells ??= new CellType[width, height];
+            cellColors ??= new ShapeColor[width, height];
         }
     }
 }

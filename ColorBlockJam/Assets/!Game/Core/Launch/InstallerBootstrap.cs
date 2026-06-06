@@ -78,7 +78,7 @@ namespace _Game.Core.Launch
             _gridService = new GridService(gridData, _poolService);
             ServiceLocator.Register(_gridService);
             
-            _environmentFactory = new EnvironmentFactory(gridData, _poolService);
+            _environmentFactory = new EnvironmentFactory(gridData, _poolService, colorPalette);
             ServiceLocator.Register(_environmentFactory);
 
             _shapeFactory = new ShapeFactory(shapePrefab, colorPalette, _gridService, _poolService, shapeData);

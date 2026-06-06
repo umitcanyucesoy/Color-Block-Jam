@@ -14,15 +14,17 @@ namespace _Game.Core.Factory
 
         private readonly GridData _data;
         private readonly IPoolService _pool;
+        private readonly ColorPalette _palette;
         private readonly List<Transform> _edgeWalls = new();
         private readonly List<InteractableBox> _mechanics = new();
         
         private Transform _root;
 
-        public EnvironmentFactory(GridData data, IPoolService pool)
+        public EnvironmentFactory(GridData data, IPoolService pool, ColorPalette palette)
         {
             _data = data;
             _pool = pool;
+            _palette = palette;
         }
 
         public void Build(LevelData level, IGridService grid)
@@ -54,17 +56,17 @@ namespace _Game.Core.Factory
                 bool rightBoundary = rightCell == CellType.Wall || rightCell == CellType.VacuumBox;
 
                 if (topCell == CellType.Wall) CreateEdgeWall(x, y, 0f, grid);
-                else if (topCell == CellType.VacuumBox) CreateVacuumBox(x, y, 0f, grid);
+                else if (topCell == CellType.VacuumBox) CreateVacuumBox(x, y, 0f, grid, level.GetCellColor(x, y - 1));
 
                 if (bottomCell == CellType.Wall) CreateEdgeWall(x, y, 180f, grid);
-                else if (bottomCell == CellType.VacuumBox) CreateVacuumBox(x, y, 180f, grid);
+                else if (bottomCell == CellType.VacuumBox) CreateVacuumBox(x, y, 180f, grid, level.GetCellColor(x, y + 1));
 
                 if (leftCell == CellType.Wall) CreateEdgeWall(x, y, -90f, grid);
-                else if (leftCell == CellType.VacuumBox) CreateVacuumBox(x, y, -90f, grid);
+                else if (leftCell == CellType.VacuumBox) CreateVacuumBox(x, y, -90f, grid, level.GetCellColor(x - 1, y));
 
                 if (rightCell == CellType.Wall) CreateEdgeWall(x, y, 90f, grid);
-                else if (rightCell == CellType.VacuumBox) CreateVacuumBox(x, y, 90f, grid);
-
+                else if (rightCell == CellType.VacuumBox) CreateVacuumBox(x, y, 90f, grid, level.GetCellColor(x + 1, y));
+                
                 if (topBoundary && leftBoundary) CreateCornerWall(x, y, 0f, grid);
                 if (topBoundary && rightBoundary) CreateCornerWall(x, y, 90f, grid);
                 if (bottomBoundary && rightBoundary) CreateCornerWall(x, y, 180f, grid);
@@ -90,12 +92,14 @@ namespace _Game.Core.Factory
             _edgeWalls.Add(wall);
         }
 
-        private void CreateVacuumBox(int x, int y, float yRotation, IGridService grid)
+        private void CreateVacuumBox(int x, int y, float yRotation, IGridService grid, ShapeColor color)
         {
             if (!_data.vacuumBoxPrefab) return;
             var vacuum = _pool.Get(_data.vacuumBoxPrefab, _root);
             vacuum.transform.position = grid.CoordToWorld(x, y);
             vacuum.transform.rotation = Quaternion.Euler(0f, yRotation, 0f);
+            vacuum.SetColor(_palette.GetMaterial(color));
+                
             _mechanics.Add(vacuum);
         }
 
