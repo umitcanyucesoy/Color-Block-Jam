@@ -95,7 +95,7 @@ namespace _Game.Core.Launch
         private void InstallGame()
         {
             _matchController.Init(_gridService, _levelController, _poolService);
-            _shapeController.Init(_gridService, shapeData, _matchController);
+            _shapeController.Init(_gridService, _matchController);
             _levelController.LoadCurrent();
         }
     }

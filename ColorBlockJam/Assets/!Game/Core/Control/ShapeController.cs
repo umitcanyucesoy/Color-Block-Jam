@@ -15,17 +15,15 @@ namespace _Game.Core.Control
 
         private readonly List<Vector2Int> _buffer = new();
         private IGridService _grid;
-        private ShapeData _data;
         private IMatchController _matchController; 
         private Shape _shape;
         private Vector2 _offset;
         private Vector2 _cell;
         private Vector2Int _origin;
 
-        public void Init(IGridService grid, ShapeData data, IMatchController matchController)
+        public void Init(IGridService grid, IMatchController matchController)
         {
             _grid = grid;
-            _data = data;
             _matchController = matchController;
 
             EventBus.Subscribe<ShapeGrabbedEvent>(OnGrabbed);
@@ -51,8 +49,7 @@ namespace _Game.Core.Control
             var pos = _shape.transform.position;
             _offset = new Vector2(pos.x - e.WorldPoint.x, pos.z - e.WorldPoint.z);
 
-            _shape.transform.DOKill();
-            _shape.transform.DOMoveY(_data.yOffset + _data.liftHeight, _data.liftDuration);
+            _shape.AnimateLift();
         }
 
         private void OnDragged(ShapeDraggedEvent e)
@@ -86,11 +83,8 @@ namespace _Game.Core.Control
             _shape.SetAnchor(target);
             _grid.Occupy(_shape);
 
-            _shape.transform.DOKill();
             var world = _grid.CoordToWorld(target.x, target.y);
-            world.y = _data.yOffset;
-            _shape.transform.DOMove(world, _data.dropDuration);
-
+            _shape.AnimateDrop(world);
             _shape = null;
         }
 

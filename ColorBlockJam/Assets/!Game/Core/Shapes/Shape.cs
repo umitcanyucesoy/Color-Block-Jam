@@ -2,12 +2,14 @@ using System.Collections.Generic;
 using _Game.Core.Pool;
 using _Game.Data;
 using _Game.Enums;
+using Cysharp.Threading.Tasks;
 using UnityEngine;
 
 namespace _Game.Core.Shapes
 {
     public abstract class Shape : MonoBehaviour, IPoolable
     {
+        [SerializeField] protected ShapeData data;
         [SerializeField] protected Unit unitPrefab;
 
         protected Unit[] units;
@@ -48,7 +50,10 @@ namespace _Game.Core.Shapes
         }
 
         protected abstract void Setup(Material material, float cellSize);
-
+        public abstract void AnimateLift();
+        public abstract void AnimateDrop(Vector3 targetWorldPos);
+        public abstract void AnimateSwallow(Vector3 targetWorldPos);
+        
         public virtual void OnSpawn() { }
 
         public virtual void OnDespawn()

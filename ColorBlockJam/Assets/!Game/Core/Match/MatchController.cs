@@ -113,15 +113,7 @@ namespace _Game.Core.Match
             Vector3 targetWorldPos = _grid.CoordToWorld(targetAnchor.x, targetAnchor.y);
             targetWorldPos.y = snapWorldPos.y;
 
-            var seq = DOTween.Sequence();
-            
-            seq.Append(shape.transform.DOMove(targetWorldPos, 0.45f).SetEase(Ease.InOutSine));
-            seq.Join(shape.transform.DOScale(Vector3.zero, 0.45f).SetEase(Ease.InBack)); 
-            
-            seq.OnComplete(() => {
-                shape.transform.localScale = Vector3.one; 
-                _pool.Release(shape);
-            });
+            shape.AnimateSwallow(targetWorldPos);
         }
     }
 }

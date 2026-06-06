@@ -77,4 +77,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 30cb493249174421eab546c8fb78a253, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::_Game.Core.Shapes.PolyominoShape
+  data: {fileID: 11400000, guid: 409893112dfe14124b1f9593450ab3cf, type: 2}
   unitPrefab: {fileID: 1888991069780048442, guid: 7b8628cbc6d4e4349a0171b4ee583f24, type: 3}

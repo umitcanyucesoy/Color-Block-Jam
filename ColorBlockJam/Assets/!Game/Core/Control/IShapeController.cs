@@ -7,7 +7,7 @@ namespace _Game.Core.Control
 {
     public interface IShapeController
     {
-        void Init(IGridService grid, ShapeData data, IMatchController matchController);
+        void Init(IGridService grid, IMatchController matchController);
         void Dispose();
     }
 }
