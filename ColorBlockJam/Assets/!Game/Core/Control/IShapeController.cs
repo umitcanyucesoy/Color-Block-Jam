@@ -1,4 +1,5 @@
 using _Game.Core.Grid;
+using _Game.Core.Match;
 using _Game.Data;
 using _Game.Services;
 
@@ -6,7 +7,7 @@ namespace _Game.Core.Control
 {
     public interface IShapeController
     {
-        void Init(IGridService grid, ShapeData data);
+        void Init(IGridService grid, ShapeData data, IMatchController matchController);
         void Dispose();
     }
 }

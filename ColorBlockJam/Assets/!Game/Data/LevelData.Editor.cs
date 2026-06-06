@@ -143,7 +143,6 @@ namespace _Game.Data
                     }
                     else if (e.isKey && e.type == EventType.KeyDown)
                     {
-                        // EĞER SHIFT'E BASILIYSA -> RENK BOYAMA (Sadece VacuumBox için)
                         if (e.shift && value == CellType.VacuumBox)
                         {
                             ShapeColor? paintColor = e.keyCode switch
@@ -165,7 +164,6 @@ namespace _Game.Data
                                 e.Use();
                             }
                         }
-                        // SHIFT'E BASILI DEĞİLSE -> ZEMİN TİPİ BOYAMA
                         else if (!e.shift) 
                         {
                             CellType? paintType = e.keyCode switch
@@ -182,7 +180,6 @@ namespace _Game.Data
                             {
                                 value = paintType.Value;
                                 
-                                // Eğer VacuumBox'tan başka bir şeye geçiş yapılıyorsa iç rengini sıfırla ki çöp data kalmasın
                                 if (value != CellType.VacuumBox) 
                                     self.cellColors[x, y] = ShapeColor.None;
 
@@ -203,10 +200,8 @@ namespace _Game.Data
                 }
             }
 
-            // Alt Zemini (Dış Çerçeveyi) Çiz
             EditorGUI.DrawRect(Inset(rect, BasePadding), BoardColor(value));
 
-            // VacuumBox Özel Çizimi: Dış çerçeve beyaz kalır, içi seçilen renge boyanır
             if (value == CellType.VacuumBox)
             {
                 var vColor = self != null ? self.cellColors[x, y] : ShapeColor.None;
@@ -224,7 +219,6 @@ namespace _Game.Data
                 GUI.Label(rect, "VAC", style); 
             }
 
-            // Üst Katmanı (Şekil) Çiz
             if (self != null && x < self.Width && y < self.Height)
             {
                 if (self._overlayConflict[x, y])

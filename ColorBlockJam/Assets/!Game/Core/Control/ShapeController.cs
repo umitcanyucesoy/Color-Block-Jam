@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using _Game.Core.Grid;
+using _Game.Core.Match;
 using _Game.Core.Shapes;
 using _Game.Data;
 using _Game.Events;
@@ -15,15 +16,17 @@ namespace _Game.Core.Control
         private readonly List<Vector2Int> _buffer = new();
         private IGridService _grid;
         private ShapeData _data;
+        private IMatchController _matchController; 
         private Shape _shape;
         private Vector2 _offset;
         private Vector2 _cell;
         private Vector2Int _origin;
 
-        public void Init(IGridService grid, ShapeData data)
+        public void Init(IGridService grid, ShapeData data, IMatchController matchController)
         {
             _grid = grid;
             _data = data;
+            _matchController = matchController;
 
             EventBus.Subscribe<ShapeGrabbedEvent>(OnGrabbed);
             EventBus.Subscribe<ShapeDraggedEvent>(OnDragged);
@@ -39,8 +42,7 @@ namespace _Game.Core.Control
 
         private void OnGrabbed(ShapeGrabbedEvent e)
         {
-            if (_shape || !e.Shape)
-                return;
+            if (_shape || !e.Shape) return;
 
             _shape = e.Shape;
             _origin = _shape.Anchor;
@@ -55,13 +57,17 @@ namespace _Game.Core.Control
 
         private void OnDragged(ShapeDraggedEvent e)
         {
-            if (!_shape)
-                return;
+            if (!_shape) return;
+            _grid.Free(_shape);
 
             var desired = new Vector3(e.WorldPoint.x + _offset.x, 0f, e.WorldPoint.z + _offset.y);
-            var want = ClampToBounds(_grid.WorldToCell(desired));
+            var wantCell = _grid.WorldToCell(desired);
 
-            _cell = Resolve(_cell, want);
+            _cell = Resolve(_cell, wantCell);
+
+            if (_shape) _grid.Occupy(_shape); 
+
+            if (!_shape) return;
 
             var world = _grid.CellToWorld(_cell);
             var pos = _shape.transform.position;
@@ -70,8 +76,7 @@ namespace _Game.Core.Control
 
         private void OnReleased(ShapeReleasedEvent e)
         {
-            if (!_shape)
-                return;
+            if (!_shape) return;
 
             var target = new Vector2Int(Mathf.RoundToInt(_cell.x), Mathf.RoundToInt(_cell.y));
             if (!FootprintFree(target))
@@ -89,17 +94,11 @@ namespace _Game.Core.Control
             _shape = null;
         }
 
-        private Vector2 ClampToBounds(Vector2 cell)
-        {
-            var size = _shape.Size;
-            float maxX = Mathf.Max(0, _grid.Width - size.x);
-            float maxY = Mathf.Max(0, _grid.Height - size.y);
-            return new Vector2(Mathf.Clamp(cell.x, 0f, maxX), Mathf.Clamp(cell.y, 0f, maxY));
-        }
-
         private Vector2 Resolve(Vector2 current, Vector2 target)
         {
             float x = StepAxis(current, target.x, true);
+            if (!_shape) return new Vector2(x, current.y); 
+
             float y = StepAxis(new Vector2(x, current.y), target.y, false);
             return new Vector2(x, y);
         }
@@ -115,8 +114,16 @@ namespace _Game.Core.Control
             {
                 float next = value + dir * Mathf.Min(SubStep, Mathf.Abs(target - value));
                 var probe = xAxis ? new Vector2(next, from.y) : new Vector2(from.x, next);
+
                 if (!FootprintFreeContinuous(probe))
-                    break;
+                {
+                    var currentPos = new Vector2(xAxis ? value : from.x, xAxis ? from.y : value);
+                    
+                    if (_matchController.TrySwallow(_shape, currentPos, probe))
+                        _shape = null; 
+                    
+                    break; 
+                }
                 value = next;
             }
 
@@ -126,15 +133,20 @@ namespace _Game.Core.Control
         private bool FootprintFreeContinuous(Vector2 cell)
         {
             var offsets = _shape.Cells;
+            const float shrink = 0.1f; 
+
             for (int i = 0; i < offsets.Count; i++)
             {
                 float wx = cell.x + offsets[i].x;
                 float wy = cell.y + offsets[i].y;
-                int x0 = Mathf.FloorToInt(wx), x1 = Mathf.CeilToInt(wx);
-                int y0 = Mathf.FloorToInt(wy), y1 = Mathf.CeilToInt(wy);
+                
+                int x0 = Mathf.FloorToInt(wx + shrink);
+                int x1 = Mathf.FloorToInt(wx + 1f - shrink);
+                int y0 = Mathf.FloorToInt(wy + shrink);
+                int y1 = Mathf.FloorToInt(wy + 1f - shrink);
 
-                if (!_grid.IsCellFree(x0, y0, _shape) || !_grid.IsCellFree(x1, y0, _shape) ||
-                    !_grid.IsCellFree(x0, y1, _shape) || !_grid.IsCellFree(x1, y1, _shape))
+                if (!_matchController.IsDraggable(_shape, x0, y0) || !_matchController.IsDraggable(_shape, x1, y0) ||
+                    !_matchController.IsDraggable(_shape, x0, y1) || !_matchController.IsDraggable(_shape, x1, y1))
                     return false;
             }
 

@@ -26,8 +26,6 @@ namespace _Game.Core.Grid
         private int _width;
         private int _height;
 
-        public int Width => _width;
-        public int Height => _height;
         public float CellSize => _data.cellSize;
 
         public GridService(GridData data, IPoolService pool)
@@ -56,7 +54,10 @@ namespace _Game.Core.Grid
             {
                 var cellType = level.GetCell(x, y);
                 
-                if (cellType == CellType.Empty || cellType == CellType.Wall || cellType == CellType.VacuumBox || cellType == CellType.Block)
+                if (cellType == CellType.Empty ||
+                    cellType == CellType.Wall ||
+                    cellType == CellType.VacuumBox || 
+                    cellType == CellType.Block)
                     continue;
 
                 var tile = _pool.Get(_data.tilePrefab, _root);

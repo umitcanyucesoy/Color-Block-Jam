@@ -4,6 +4,7 @@ using _Game.Core.Factory;
 using _Game.Core.Grid;
 using _Game.Core.Input;
 using _Game.Core.Level;
+using _Game.Core.Match;
 using _Game.Core.Pool;
 using _Game.Core.Shapes;
 using _Game.Data;
@@ -27,6 +28,7 @@ namespace _Game.Core.Launch
         [SerializeField] private CameraController cameraController;
         [SerializeField] private LevelController levelController;
         [SerializeField] private ShapeController shapeController;
+        [SerializeField] private MatchController matchController;
 
         private IPoolService _poolService;
         private ICameraController _cameraController;
@@ -36,6 +38,7 @@ namespace _Game.Core.Launch
         private IEnvironmentFactory _environmentFactory;
         private IShapeController _shapeController;
         private ILevelController _levelController;
+        private IMatchController _matchController;
 
         private void Awake()
         {
@@ -65,6 +68,7 @@ namespace _Game.Core.Launch
             _levelController = levelController;
             _cameraController = cameraController;
             _shapeController = shapeController; 
+            _matchController = matchController;
             
             _poolService = new PoolService(poolData);
             ServiceLocator.Register(_poolService);
@@ -90,7 +94,8 @@ namespace _Game.Core.Launch
 
         private void InstallGame()
         {
-            _shapeController.Init(_gridService, shapeData);
+            _matchController.Init(_gridService, _levelController, _poolService);
+            _shapeController.Init(_gridService, shapeData, _matchController);
             _levelController.LoadCurrent();
         }
     }

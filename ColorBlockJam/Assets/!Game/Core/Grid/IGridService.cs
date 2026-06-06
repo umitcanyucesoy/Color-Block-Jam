@@ -7,8 +7,6 @@ namespace _Game.Core.Grid
 {
     public interface IGridService : IService
     {
-        int Width { get; }
-        int Height { get; }
         float CellSize { get; }
 
         void Build(LevelData level);
