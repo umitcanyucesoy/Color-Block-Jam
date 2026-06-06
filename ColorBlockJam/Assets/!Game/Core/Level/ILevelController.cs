@@ -10,8 +10,7 @@ namespace _Game.Core.Level
         int Index { get; }
         LevelData Current { get; }
 
-        void Init(IGridService gridService, IShapeFactory shapeFactory);
-        void LoadCurrent();
+        void Init(IGridService gridService, IShapeFactory shapeFactory, IEnvironmentFactory environmentFactory);        void LoadCurrent();
         void NextLevel();
         void RetryLevel();
     }

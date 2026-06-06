@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using _Game.Core.Interactable;
 using _Game.Core.Pool;
 using _Game.Core.Shapes;
 using _Game.Data;
@@ -15,6 +16,8 @@ namespace _Game.Core.Grid
         private readonly GridData _data;
         private readonly IPoolService _pool;
         private readonly List<Vector2Int> _cellBuffer = new();
+        private readonly List<Transform> _edgeWalls = new(); 
+        private readonly List<InteractableBox> _mechanics = new();
 
         private LevelData _level;
         private Tile[,] _tiles;
@@ -35,11 +38,7 @@ namespace _Game.Core.Grid
 
         public void Build(LevelData level)
         {
-            if (!_data || !level)
-            {
-                Debug.LogError("[GridService] Missing GridData or LevelData.");
-                return;
-            }
+            if (!_data || !level) return;
 
             Clear();
 
@@ -55,7 +54,9 @@ namespace _Game.Core.Grid
             for (int y = 0; y < _height; y++)
             for (int x = 0; x < _width; x++)
             {
-                if (level.GetCell(x, y) == CellType.Empty)
+                var cellType = level.GetCell(x, y);
+                
+                if (cellType == CellType.Empty || cellType == CellType.Wall || cellType == CellType.VacuumBox || cellType == CellType.Block)
                     continue;
 
                 var tile = _pool.Get(_data.tilePrefab, _root);

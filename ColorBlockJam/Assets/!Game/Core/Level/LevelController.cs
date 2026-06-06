@@ -12,15 +12,17 @@ namespace _Game.Core.Level
 
         private IGridService _grid;
         private IShapeFactory _shapeFactory;
+        private IEnvironmentFactory _envFactory;
         private int _index;
 
         public int Index => _index;
         public LevelData Current => _index >= 0 && _index < levels.Count ? levels[_index] : null;
 
-        public void Init(IGridService grid, IShapeFactory shapeFactory)
+        public void Init(IGridService grid, IShapeFactory shapeFactory, IEnvironmentFactory envFactory)
         {
             _grid = grid;
             _shapeFactory = shapeFactory;
+            _envFactory = envFactory;
         }
 
         public void LoadCurrent()
@@ -34,9 +36,11 @@ namespace _Game.Core.Level
             var level = levels[_index];
 
             _shapeFactory.Clear();
+            _envFactory.Clear();
             _grid.Clear();
 
             _grid.Build(level);
+            _envFactory.Build(level, _grid);
             _shapeFactory.BuildLevel(level);
         }
 

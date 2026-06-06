@@ -21,7 +21,6 @@ namespace _Game.Core.Shapes
         public ShapeRotation Rotation { get; private set; }
         public Vector2Int Size { get; private set; }
 
-        // Footprint offsets after rotation, anchored at (0,0). Drives both visuals and occupancy.
         public IReadOnlyList<Vector2Int> Cells => _cells;
 
         public void Build(ShapeDefinition definition, ShapeColor color, Vector2Int anchor,

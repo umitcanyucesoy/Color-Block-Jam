@@ -4,6 +4,8 @@ namespace _Game.Enums
     {
         Empty = 0,
         Fillable = 1,
-        Wall = 2
+        Block = 2,
+        Wall = 3,
+        VacuumBox = 4
     }
 }

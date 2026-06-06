@@ -23,9 +23,6 @@ namespace _Game.Data
 
         [NonSerialized] private List<Vector2Int> _offsets;
 
-        public IReadOnlyList<Vector2Int> Offsets { get { EnsureBaked(); return _offsets; } }
-        public int CellCount { get { EnsureBaked(); return _offsets.Count; } }
-
         public Vector2Int Size
         {
             get

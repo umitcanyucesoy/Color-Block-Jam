@@ -13,15 +13,20 @@ namespace _Game.Data
         private static LevelData _drawing;
         private static int _cursor;
 
-        private ShapeColor[,] _overlayShape;
+        private int[,] _overlayShapeIndex;
         private bool[,] _overlayConflict;
+        private static int _draggingShapeIndex = -1;
+        private static Vector2Int _dragOffset;
 
         private static readonly List<Vector2Int> CellBuffer = new();
         private readonly StringBuilder _issuesBuilder = new();
         private string _issues;
 
         private static readonly Color FillableColor = new(0.55f, 0.55f, 0.55f);
+        private static readonly Color BlockColor = new(0.35f, 0.35f, 0.38f);
         private static readonly Color WallColor = new(0.12f, 0.12f, 0.14f);
+        private static readonly Color VacuumBorderColor = new(0.85f, 0.55f, 0.20f);
+        private static readonly Color VacuumInnerColor = new(0.18f, 0.18f, 0.20f);
         private static readonly Color EmptyColor = new(0.22f, 0.22f, 0.22f);
         private static readonly Color ConflictColor = new(0.85f, 0.18f, 0.18f);
         private const float BasePadding = 1f;
@@ -42,19 +47,17 @@ namespace _Game.Data
         {
             int w = Width, h = Height;
 
-            if (_overlayShape == null || _overlayShape.GetLength(0) != w || _overlayShape.GetLength(1) != h)
+            if (_overlayShapeIndex == null || _overlayShapeIndex.GetLength(0) != w || _overlayShapeIndex.GetLength(1) != h)
             {
-                _overlayShape = new ShapeColor[w, h];
+                _overlayShapeIndex = new int[w, h];
                 _overlayConflict = new bool[w, h];
             }
-            else
+            
+            for (int x = 0; x < w; x++)
+            for (int y = 0; y < h; y++)
             {
-                for (int x = 0; x < w; x++)
-                for (int y = 0; y < h; y++)
-                {
-                    _overlayShape[x, y] = ShapeColor.None;
-                    _overlayConflict[x, y] = false;
-                }
+                _overlayShapeIndex[x, y] = -1; 
+                _overlayConflict[x, y] = false;
             }
 
             _issuesBuilder.Clear();
@@ -85,13 +88,13 @@ namespace _Game.Data
                             _issuesBuilder.AppendLine($"Shape #{i} ({p.color}) on a non-fillable cell ({cell.x},{cell.y}).");
                         }
 
-                        if (_overlayShape[cell.x, cell.y] != ShapeColor.None)
+                        if (_overlayShapeIndex[cell.x, cell.y] != -1)
                         {
                             _overlayConflict[cell.x, cell.y] = true;
                             _issuesBuilder.AppendLine($"Overlap at ({cell.x},{cell.y}).");
                         }
 
-                        _overlayShape[cell.x, cell.y] = p.color;
+                        _overlayShapeIndex[cell.x, cell.y] = i; 
                     }
                 }
             }
@@ -112,24 +115,79 @@ namespace _Game.Data
                 y = idx % h;
             }
 
-            if (self != null &&
-                Event.current.type == EventType.MouseDown &&
-                Event.current.button == 0 &&
-                rect.Contains(Event.current.mousePosition))
+            if (self != null)
             {
-                value = NextType(value);
-                GUI.changed = true;
-                Event.current.Use();
+                var e = Event.current;
+                int shapeIndex = self._overlayShapeIndex[x, y];
+
+                if (rect.Contains(e.mousePosition))
+                {
+                    if (e.type == EventType.MouseDown && e.button == 0)
+                    {
+                        if (e.shift)
+                        {
+                            value = NextType(value);
+                            GUI.changed = true;
+                            e.Use();
+                        }
+                        else if (shapeIndex != -1)
+                        {
+                            _draggingShapeIndex = shapeIndex;
+                            var shape = self.shapes[shapeIndex];
+                            _dragOffset = new Vector2Int(x - shape.anchor.x, y - shape.anchor.y);
+                            e.Use();
+                        }
+                    }
+                    else if (e.type == EventType.MouseDrag && e.button == 0 && _draggingShapeIndex != -1)
+                    {
+                       
+                        var shape = self.shapes[_draggingShapeIndex];
+                        var newAnchor = new Vector2Int(x - _dragOffset.x, y - _dragOffset.y);
+                        
+                        if (shape.anchor != newAnchor)
+                        {
+                            shape.anchor = newAnchor;
+                            GUI.changed = true; 
+                        }
+                        e.Use();
+                    }
+                }
+
+                if (e.rawType == EventType.MouseUp && e.button == 0)
+                {
+                    if (_draggingShapeIndex != -1)
+                    {
+                        _draggingShapeIndex = -1;
+                        GUI.changed = true;
+                    }
+                }
             }
 
             EditorGUI.DrawRect(Inset(rect, BasePadding), BoardColor(value));
+            
+            if (value == CellType.VacuumBox)
+            {
+                EditorGUI.DrawRect(Inset(rect, BasePadding + 2.5f), VacuumInnerColor);
+                
+                var style = new GUIStyle(GUI.skin.label)
+                {
+                    alignment = TextAnchor.MiddleCenter,
+                    fontStyle = FontStyle.Bold,
+                    fontSize = 9,
+                    normal = new GUIStyleState { textColor = Color.white }
+                };
+                GUI.Label(rect, "VAC", style); 
+            }
 
             if (self != null && x < self.Width && y < self.Height)
             {
                 if (self._overlayConflict[x, y])
                     EditorGUI.DrawRect(Inset(rect, OverlayPadding), ConflictColor);
-                else if (self._overlayShape[x, y] != ShapeColor.None)
-                    EditorGUI.DrawRect(Inset(rect, OverlayPadding), ShapeToColor(self._overlayShape[x, y]));
+                else if (self._overlayShapeIndex[x, y] != -1)
+                {
+                    var color = self.shapes[self._overlayShapeIndex[x, y]].color;
+                    EditorGUI.DrawRect(Inset(rect, OverlayPadding), ShapeToColor(color));
+                }
             }
 
             return value;
@@ -138,14 +196,19 @@ namespace _Game.Data
         private static CellType NextType(CellType type) => type switch
         {
             CellType.Empty => CellType.Fillable,
-            CellType.Fillable => CellType.Wall,
+            CellType.Fillable => CellType.Block,
+            CellType.Block => CellType.Wall,
+            CellType.Wall => CellType.VacuumBox,
+            CellType.VacuumBox => CellType.Empty,
             _ => CellType.Empty
         };
 
         private static Color BoardColor(CellType type) => type switch
         {
             CellType.Fillable => FillableColor,
+            CellType.Block => BlockColor,
             CellType.Wall => WallColor,
+            CellType.VacuumBox => VacuumBorderColor, 
             _ => EmptyColor
         };
 

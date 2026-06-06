@@ -15,12 +15,12 @@ namespace _Game.Core.Grid
         void Clear();
 
         bool IsCellFree(int x, int y, Shape ignore);
+        bool IsInside(int x, int y);
         void Occupy(Shape shape);
         void Free(Shape shape);
 
         Vector3 CoordToWorld(int x, int y);
         Vector3 CellToWorld(Vector2 cell);
         Vector2 WorldToCell(Vector3 world); 
-
     }
 }

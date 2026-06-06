@@ -33,6 +33,7 @@ namespace _Game.Core.Launch
         private IInputService _inputService;
         private IGridService _gridService;
         private IShapeFactory _shapeFactory;
+        private IEnvironmentFactory _environmentFactory;
         private IShapeController _shapeController;
         private ILevelController _levelController;
 
@@ -76,11 +77,14 @@ namespace _Game.Core.Launch
 
             _gridService = new GridService(gridData, _poolService);
             ServiceLocator.Register(_gridService);
+            
+            _environmentFactory = new EnvironmentFactory(gridData, _poolService);
+            ServiceLocator.Register(_environmentFactory);
 
             _shapeFactory = new ShapeFactory(shapePrefab, colorPalette, _gridService, _poolService, shapeData);
             ServiceLocator.Register(_shapeFactory);
             
-            _levelController.Init(_gridService, _shapeFactory);
+            _levelController.Init(_gridService, _shapeFactory, _environmentFactory);
             ServiceLocator.Register(_levelController);
         }
 

@@ -20,7 +20,7 @@ namespace _Game.Data
         private CellType[,] cells;
 
         [PropertyOrder(3), PropertySpace(SpaceBefore = 12), Title("Shapes")]
-        [ListDrawerSettings(ShowFoldout = true)]
+        [ListDrawerSettings(ShowFoldout = true, CustomAddFunction = nameof(AddNewShape))]
         [SerializeField]
         private List<ShapePlacement> shapes = new();
 
@@ -45,6 +45,15 @@ namespace _Game.Data
             }
 
             cells = resized;
+        }
+        
+        private void AddNewShape()
+        {
+            shapes ??= new List<ShapePlacement>();
+            shapes.Add(new ShapePlacement 
+            { 
+                anchor = new Vector2Int(width / 2, height / 2) 
+            });
         }
 
         [OnInspectorInit]

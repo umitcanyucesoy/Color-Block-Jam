@@ -1,4 +1,5 @@
 using _Game.Core.Grid;
+using _Game.Core.Interactable;
 using UnityEngine;
 
 namespace _Game.Data
@@ -8,6 +9,9 @@ namespace _Game.Data
     {
         [Header("References")]
         public Tile tilePrefab;
+        public Transform edgeWallPrefab;
+        public Transform cornerWallPrefab;
+        public VacuumBox vacuumBoxPrefab;
 
         [Header("Layout")]
         public float cellSize = 1f;
