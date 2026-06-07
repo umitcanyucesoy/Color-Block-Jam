@@ -790,3 +790,7 @@ MonoBehaviour:
     color: 2
     anchor: {x: 5, y: 5}
     rotation: 0
+  - definition: {fileID: 11400000, guid: 51e82b380a7d04d2bbf338e3ea31d0f9, type: 2}
+    color: 3
+    anchor: {x: 5, y: 7}
+    rotation: 0

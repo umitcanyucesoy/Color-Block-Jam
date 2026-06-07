@@ -52,7 +52,7 @@ namespace _Game.Core.Shapes
         protected abstract void Setup(Material material, float cellSize);
         public abstract void AnimateLift();
         public abstract void AnimateDrop(Vector3 targetWorldPos);
-        public abstract void AnimateSwallow(Vector3 targetWorldPos);
+        public abstract void AnimateSwallow(Vector3 targetWorldPos, bool horizontal);
         
         public virtual void OnSpawn() { }
 

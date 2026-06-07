@@ -90,17 +90,17 @@ namespace _Game.Core.Control
 
         private Vector2 Resolve(Vector2 current, Vector2 target)
         {
-            float x = StepAxis(current, target.x, true);
+            var x = StepAxis(current, target.x, true);
             if (!_shape) return new Vector2(x, current.y); 
 
-            float y = StepAxis(new Vector2(x, current.y), target.y, false);
+            var y = StepAxis(new Vector2(x, current.y), target.y, false);
             return new Vector2(x, y);
         }
 
         private float StepAxis(Vector2 from, float target, bool xAxis)
         {
-            float value = xAxis ? from.x : from.y;
-            float dir = Mathf.Sign(target - value);
+            var value = xAxis ? from.x : from.y;
+            var dir = Mathf.Sign(target - value);
             if (Mathf.Approximately(value, target) || Mathf.Approximately(dir, 0f))
                 return value;
 
@@ -131,13 +131,13 @@ namespace _Game.Core.Control
 
             for (int i = 0; i < offsets.Count; i++)
             {
-                float wx = cell.x + offsets[i].x;
-                float wy = cell.y + offsets[i].y;
+                var wx = cell.x + offsets[i].x;
+                var wy = cell.y + offsets[i].y;
                 
-                int x0 = Mathf.FloorToInt(wx + shrink);
-                int x1 = Mathf.FloorToInt(wx + 1f - shrink);
-                int y0 = Mathf.FloorToInt(wy + shrink);
-                int y1 = Mathf.FloorToInt(wy + 1f - shrink);
+                var x0 = Mathf.FloorToInt(wx + shrink);
+                var x1 = Mathf.FloorToInt(wx + 1f - shrink);
+                var y0 = Mathf.FloorToInt(wy + shrink);
+                var y1 = Mathf.FloorToInt(wy + 1f - shrink);
 
                 if (!_matchController.IsDraggable(_shape, x0, y0) || !_matchController.IsDraggable(_shape, x1, y0) ||
                     !_matchController.IsDraggable(_shape, x0, y1) || !_matchController.IsDraggable(_shape, x1, y1))

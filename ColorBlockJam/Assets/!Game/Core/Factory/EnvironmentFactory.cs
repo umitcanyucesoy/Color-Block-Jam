@@ -15,16 +15,18 @@ namespace _Game.Core.Factory
         private readonly GridData _data;
         private readonly IPoolService _pool;
         private readonly ColorPalette _palette;
+        private readonly IVacuumBoxController _vacuums;
         private readonly List<Transform> _edgeWalls = new();
         private readonly List<InteractableBox> _mechanics = new();
-        
+
         private Transform _root;
 
-        public EnvironmentFactory(GridData data, IPoolService pool, ColorPalette palette)
+        public EnvironmentFactory(GridData data, IPoolService pool, ColorPalette palette, IVacuumBoxController vacuums)
         {
             _data = data;
             _pool = pool;
             _palette = palette;
+            _vacuums = vacuums;
         }
 
         public void Build(LevelData level, IGridService grid)
@@ -56,22 +58,24 @@ namespace _Game.Core.Factory
                 bool rightBoundary = rightCell == CellType.Wall || rightCell == CellType.VacuumBox;
 
                 if (topCell == CellType.Wall) CreateEdgeWall(x, y, 0f, grid);
-                else if (topCell == CellType.VacuumBox) CreateVacuumBox(x, y, 0f, grid, level.GetCellColor(x, y - 1));
+                else if (topCell == CellType.VacuumBox) CreateVacuumBox(x, y, new Vector2Int(x, y - 1), 0f, grid, level.GetCellColor(x, y - 1));
 
                 if (bottomCell == CellType.Wall) CreateEdgeWall(x, y, 180f, grid);
-                else if (bottomCell == CellType.VacuumBox) CreateVacuumBox(x, y, 180f, grid, level.GetCellColor(x, y + 1));
+                else if (bottomCell == CellType.VacuumBox) CreateVacuumBox(x, y, new Vector2Int(x, y + 1), 180f, grid, level.GetCellColor(x, y + 1));
 
                 if (leftCell == CellType.Wall) CreateEdgeWall(x, y, -90f, grid);
-                else if (leftCell == CellType.VacuumBox) CreateVacuumBox(x, y, -90f, grid, level.GetCellColor(x - 1, y));
+                else if (leftCell == CellType.VacuumBox) CreateVacuumBox(x, y, new Vector2Int(x - 1, y), -90f, grid, level.GetCellColor(x - 1, y));
 
                 if (rightCell == CellType.Wall) CreateEdgeWall(x, y, 90f, grid);
-                else if (rightCell == CellType.VacuumBox) CreateVacuumBox(x, y, 90f, grid, level.GetCellColor(x + 1, y));
+                else if (rightCell == CellType.VacuumBox) CreateVacuumBox(x, y, new Vector2Int(x + 1, y), 90f, grid, level.GetCellColor(x + 1, y));
                 
                 if (topBoundary && leftBoundary) CreateCornerWall(x, y, 0f, grid);
                 if (topBoundary && rightBoundary) CreateCornerWall(x, y, 90f, grid);
                 if (bottomBoundary && rightBoundary) CreateCornerWall(x, y, 180f, grid);
                 if (bottomBoundary && leftBoundary) CreateCornerWall(x, y, -90f, grid);
             }
+
+            _vacuums.BuildGroups();
         }
 
         private void CreateEdgeWall(int x, int y, float yRotation, IGridService grid)
@@ -92,15 +96,16 @@ namespace _Game.Core.Factory
             _edgeWalls.Add(wall);
         }
 
-        private void CreateVacuumBox(int x, int y, float yRotation, IGridService grid, ShapeColor color)
+        private void CreateVacuumBox(int x, int y, Vector2Int vacuumCell, float yRotation, IGridService grid, ShapeColor color)
         {
             if (!_data.vacuumBoxPrefab) return;
             var vacuum = _pool.Get(_data.vacuumBoxPrefab, _root);
             vacuum.transform.position = grid.CoordToWorld(x, y);
             vacuum.transform.rotation = Quaternion.Euler(0f, yRotation, 0f);
             vacuum.SetColor(_palette.GetMaterial(color));
-                
+
             _mechanics.Add(vacuum);
+            _vacuums.Register(vacuumCell, vacuum, color);
         }
 
         public void Clear()
@@ -112,6 +117,8 @@ namespace _Game.Core.Factory
             for (int i = 0; i < _mechanics.Count; i++)
                 if (_mechanics[i]) _pool.Release(_mechanics[i]);
             _mechanics.Clear();
+
+            _vacuums.Clear();
         }
     }
 }

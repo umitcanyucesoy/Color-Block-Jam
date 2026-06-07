@@ -17,3 +17,4 @@ MonoBehaviour:
   liftDuration: 0.1
   dropDuration: 0.12
   swallowDuration: 0.6
+  swallowDepth: 0.5

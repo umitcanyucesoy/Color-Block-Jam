@@ -15,6 +15,5 @@ namespace _Game.Data
         
         [Header("Swallow")]
         public float swallowDuration = 0.35f;
-        public float swallowDepth = 0.5f; // Extra push into the vacuum box (along travel axis) so the shape tucks in instead of clipping/receding.
     }
 }

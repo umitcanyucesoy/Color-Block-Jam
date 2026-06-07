@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using _Game.Core.Grid;
+using _Game.Core.Interactable;
 using _Game.Core.Level;
 using _Game.Core.Pool;
 using _Game.Core.Shapes;
@@ -14,12 +15,14 @@ namespace _Game.Core.Match
         private IGridService _grid;
         private ILevelController _levelController;
         private IPoolService _pool;
+        private IVacuumBoxController _vacuums;
 
-        public void Init(IGridService grid, ILevelController levelController, IPoolService pool)
+        public void Init(IGridService grid, ILevelController levelController, IPoolService pool, IVacuumBoxController vacuums)
         {
             _grid = grid;
             _levelController = levelController;
             _pool = pool;
+            _vacuums = vacuums;
         }
 
         public bool IsDraggable(Shape shape, int x, int y)
@@ -47,13 +50,13 @@ namespace _Game.Core.Match
 
             for (int i = 0; i < offsets.Count; i++)
             {
-                float wx = probePos.x + offsets[i].x;
-                float wy = probePos.y + offsets[i].y;
+                var wx = probePos.x + offsets[i].x;
+                var wy = probePos.y + offsets[i].y;
                 
-                int x0 = Mathf.FloorToInt(wx + shrink);
-                int x1 = Mathf.FloorToInt(wx + 1f - shrink);
-                int y0 = Mathf.FloorToInt(wy + shrink);
-                int y1 = Mathf.FloorToInt(wy + 1f - shrink);
+                var x0 = Mathf.FloorToInt(wx + shrink);
+                var x1 = Mathf.FloorToInt(wx + 1f - shrink);
+                var y0 = Mathf.FloorToInt(wy + shrink);
+                var y1 = Mathf.FloorToInt(wy + 1f - shrink);
 
                 if (!IsWalkableOrMatchingVacuum(shape, x0, y0)) return false;
                 if (!IsWalkableOrMatchingVacuum(shape, x1, y0)) return false;
@@ -71,10 +74,22 @@ namespace _Game.Core.Match
 
             if (hitVacuumCell.HasValue)
             {
-                Vector2Int snapAnchor = new Vector2Int(Mathf.RoundToInt(currentPos.x), Mathf.RoundToInt(currentPos.y));
-                Vector2Int targetAnchor = new Vector2Int(hitVacuumCell.Value.x - hitUnitOffset.Value.x, hitVacuumCell.Value.y - hitUnitOffset.Value.y);
+                var horizontal = !Mathf.Approximately(probePos.x, currentPos.x);
 
-                ExecuteSwallow(shape, snapAnchor, targetAnchor);
+                var vacuumCell = hitVacuumCell.Value;
+                var unitOffset = hitUnitOffset.Value;
+                
+                var nearest = horizontal
+                    ? new Vector2Int(vacuumCell.x, Mathf.RoundToInt(currentPos.y + unitOffset.y))
+                    : new Vector2Int(Mathf.RoundToInt(currentPos.x + unitOffset.x), vacuumCell.y);
+
+                if (IsMatchingVacuum(shape, nearest.x, nearest.y))
+                    vacuumCell = nearest;
+
+                var snapAnchor = new Vector2Int(Mathf.RoundToInt(currentPos.x), Mathf.RoundToInt(currentPos.y));
+                var targetAnchor = new Vector2Int(vacuumCell.x - unitOffset.x, vacuumCell.y - unitOffset.y);
+
+                ExecuteSwallow(shape, snapAnchor, targetAnchor, vacuumCell, horizontal);
                 return true;
             }
 
@@ -101,19 +116,35 @@ namespace _Game.Core.Match
             return _levelController.Current.GetCell(x, y) == CellType.VacuumBox && _levelController.Current.GetCellColor(x, y) == shape.Color;
         }
 
-        private void ExecuteSwallow(Shape shape, Vector2Int snapAnchor, Vector2Int targetAnchor)
+        private void ExecuteSwallow(Shape shape, Vector2Int snapAnchor, Vector2Int targetAnchor, Vector2Int vacuumCell, bool horizontal)
         {
             _grid.Free(shape);
             shape.transform.DOKill();
 
-            Vector3 snapWorldPos = _grid.CoordToWorld(snapAnchor.x, snapAnchor.y);
-            snapWorldPos.y = shape.transform.position.y;
-            shape.transform.position = snapWorldPos;
+            float y = shape.transform.position.y;
 
-            Vector3 targetWorldPos = _grid.CoordToWorld(targetAnchor.x, targetAnchor.y);
-            targetWorldPos.y = snapWorldPos.y;
+            var snapWorld = _grid.CoordToWorld(snapAnchor.x, snapAnchor.y);
+            var anchorWorld = _grid.CoordToWorld(targetAnchor.x, targetAnchor.y);
+            var vacuumWorld = _grid.CoordToWorld(vacuumCell.x, vacuumCell.y);
 
-            shape.AnimateSwallow(targetWorldPos);
+            var startPos = anchorWorld;
+            var finalTarget = anchorWorld;
+            if (horizontal)
+            {
+                startPos.x = snapWorld.x;
+                finalTarget.x = vacuumWorld.x;
+            }
+            else
+            {
+                startPos.z = snapWorld.z;
+                finalTarget.z = vacuumWorld.z;
+            }
+            startPos.y = y;
+            finalTarget.y = y;
+
+            shape.transform.position = startPos;
+            _vacuums.PlaySwallow(vacuumCell);
+            shape.AnimateSwallow(finalTarget, horizontal);
         }
     }
 }

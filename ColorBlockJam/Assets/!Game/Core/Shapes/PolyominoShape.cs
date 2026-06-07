@@ -34,26 +34,16 @@ namespace _Game.Core.Shapes
             transform.DOMove(targetWorldPos, data.dropDuration);
         }
 
-        public override void AnimateSwallow(Vector3 targetWorldPos)
+        public override void AnimateSwallow(Vector3 targetWorldPos, bool horizontal)
         {
             transform.DOKill();
 
-            Vector3 moveDelta = targetWorldPos - transform.position;
-            bool isHorizontal = Mathf.Abs(moveDelta.x) > Mathf.Abs(moveDelta.z);
-            
-            Vector3 finalTarget = targetWorldPos;
-
-            if (isHorizontal)
+            if (horizontal)
                 transform.DOScaleX(0f, data.swallowDuration).SetEase(Ease.InQuad);
             else
-            {
-                if (moveDelta.z < 0f)
-                    finalTarget.z -= data.swallowDepth;
-
                 transform.DOScaleZ(0f, data.swallowDuration).SetEase(Ease.InQuad);
-            }
 
-            transform.DOMove(finalTarget, data.swallowDuration).SetEase(Ease.InQuad).OnComplete(() =>
+            transform.DOMove(targetWorldPos, data.swallowDuration).SetEase(Ease.InQuad).OnComplete(() =>
             {
                 transform.localScale = Vector3.one;
                 pool.Release(this);

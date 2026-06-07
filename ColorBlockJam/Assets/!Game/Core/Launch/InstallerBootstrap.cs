@@ -3,6 +3,7 @@ using _Game.Core.Control;
 using _Game.Core.Factory;
 using _Game.Core.Grid;
 using _Game.Core.Input;
+using _Game.Core.Interactable;
 using _Game.Core.Level;
 using _Game.Core.Match;
 using _Game.Core.Pool;
@@ -29,6 +30,7 @@ namespace _Game.Core.Launch
         [SerializeField] private LevelController levelController;
         [SerializeField] private ShapeController shapeController;
         [SerializeField] private MatchController matchController;
+        [SerializeField] private VacuumBoxController vacuumBoxController;
 
         private IPoolService _poolService;
         private ICameraController _cameraController;
@@ -39,6 +41,7 @@ namespace _Game.Core.Launch
         private IShapeController _shapeController;
         private ILevelController _levelController;
         private IMatchController _matchController;
+        private IVacuumBoxController _vacuumBoxController;
 
         private void Awake()
         {
@@ -67,9 +70,10 @@ namespace _Game.Core.Launch
         {
             _levelController = levelController;
             _cameraController = cameraController;
-            _shapeController = shapeController; 
+            _shapeController = shapeController;
             _matchController = matchController;
-            
+            _vacuumBoxController = vacuumBoxController;
+
             _poolService = new PoolService(poolData);
             ServiceLocator.Register(_poolService);
 
@@ -82,7 +86,7 @@ namespace _Game.Core.Launch
             _gridService = new GridService(gridData, _poolService);
             ServiceLocator.Register(_gridService);
             
-            _environmentFactory = new EnvironmentFactory(gridData, _poolService, colorPalette);
+            _environmentFactory = new EnvironmentFactory(gridData, _poolService, colorPalette, _vacuumBoxController);
             ServiceLocator.Register(_environmentFactory);
 
             _shapeFactory = new ShapeFactory(shapePrefab, colorPalette, _gridService, _poolService, shapeData);
@@ -94,7 +98,7 @@ namespace _Game.Core.Launch
 
         private void InstallGame()
         {
-            _matchController.Init(_gridService, _levelController, _poolService);
+            _matchController.Init(_gridService, _levelController, _poolService, _vacuumBoxController);
             _shapeController.Init(_gridService, _matchController);
             _levelController.LoadCurrent();
         }
