@@ -240,8 +240,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b0a5b6d16b4274e33b25b164a1804b98, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::_Game.Core.Level.LevelController
-  levels:
-  - {fileID: 11400000, guid: faf9a400cba714ab6840fee43f00faf3, type: 2}
+  database: {fileID: 11400000, guid: 1577aa145b5eb4e60be4b4c649e0f8d5, type: 2}
 --- !u!1 &182402642
 GameObject:
   m_ObjectHideFlags: 0
@@ -1554,6 +1553,7 @@ MonoBehaviour:
   winPanel: {fileID: 166997895}
   losePanel: {fileID: 770198441}
   timerText: {fileID: 1603667143}
+  levelText: {fileID: 511606928}
   nextLevelButton: {fileID: 526121452}
   retryButton: {fileID: 559851178}
 --- !u!1 &1125235236

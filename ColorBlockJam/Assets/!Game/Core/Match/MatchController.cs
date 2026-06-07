@@ -46,7 +46,7 @@ namespace _Game.Core.Match
             var level = _levelController.Current;
             if (level == null) return false;
 
-            const float shrink = 0.1f;
+            const float shrink = 0.05f;
             var offsets = shape.Cells;
 
             Vector2Int? hitVacuumCell = null;

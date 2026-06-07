@@ -15,10 +15,10 @@ MonoBehaviour:
   sounds:
   - id: 1
     clip: {fileID: 8300000, guid: e5d4c025a593048528e9d92bbf1028f1, type: 3}
-    volume: 0.205
+    volume: 0.106
   - id: 2
     clip: {fileID: 8300000, guid: 3e4ced89b902b427fa7a72dc133fa79f, type: 3}
-    volume: 0.212
+    volume: 0.113
   - id: 3
     clip: {fileID: 8300000, guid: 869948a654f7b4eea900ec759f19cf24, type: 3}
     volume: 0.212

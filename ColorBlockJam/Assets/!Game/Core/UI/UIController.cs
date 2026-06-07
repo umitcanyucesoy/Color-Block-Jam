@@ -12,6 +12,7 @@ namespace _Game.Core.UI
         [SerializeField] private GameObject winPanel;
         [SerializeField] private GameObject losePanel;
         [SerializeField] private TMP_Text timerText;
+        [SerializeField] private TMP_Text levelText;
         [SerializeField] private Button nextLevelButton;
         [SerializeField] private Button retryButton;
 
@@ -23,6 +24,7 @@ namespace _Game.Core.UI
         {
             _gameFlow = gameFlow;
             HidePanels();
+            RefreshLevel();
 
             nextLevelButton.onClick.AddListener(OnNextLevel);
             retryButton.onClick.AddListener(OnRetry);
@@ -76,12 +78,23 @@ namespace _Game.Core.UI
         {
             _gameFlow.NextLevel();
             HidePanels();
+            RefreshLevel();
         }
 
         public void OnRetry()
         {
             _gameFlow.RetryLevel();
             HidePanels();
+        }
+
+        private void RefreshLevel()
+        {
+            if (!levelText) return;
+
+            _sb.Clear();
+            _sb.Append("Level: ");
+            _sb.Append(_gameFlow.LevelIndex + 1);
+            levelText.SetText(_sb);
         }
 
         private void HidePanels()

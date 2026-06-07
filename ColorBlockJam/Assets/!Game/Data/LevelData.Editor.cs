@@ -33,7 +33,18 @@ namespace _Game.Data
         private const float OverlayPadding = 4f;
 
         private bool HasIssues => !string.IsNullOrEmpty(_issues);
-        
+
+        private const string HelpText =
+            "LEVEL EDITOR\n" +
+            "• Cell type: hover a cell + press key  →  0 Empty · 1 Fillable · 2 Block · 3 Wall · 4 VacuumBox\n" +
+            "• Vacuum color: hover a VacuumBox cell + Shift + key  →  1 Red · 2 Blue · 3 Green · 4 Yellow · 5 Orange · 6 Purple · 0 None\n" +
+            "• Shape: add one from the 'Shapes' list below (spawns at grid center) → drag it on the grid onto Fillable cells → set its rotation in the list entry\n" +
+            "• A warning appears above if a shape goes off-board, sits on a non-fillable cell, or overlaps another shape.";
+
+        [OnInspectorGUI, PropertyOrder(-10f)]
+        [InfoBox(HelpText, InfoMessageType.Info)]
+        private void DrawEditorHelp() { }
+
         [OnInspectorGUI, PropertyOrder(1.5f)]
         [InfoBox("$_issues", InfoMessageType.Warning, VisibleIf = nameof(HasIssues))]
         private void PrepareOverlay()
@@ -216,7 +227,20 @@ namespace _Game.Data
                     fontSize = 9,
                     normal = new GUIStyleState { textColor = Color.white }
                 };
-                GUI.Label(rect, "VAC", style); 
+                GUI.Label(rect, "VAC", style);
+            }
+            else
+            {
+                var label = value switch
+                {
+                    CellType.Block => "BLOCK",
+                    CellType.Wall => "WALL",
+                    CellType.Empty => "EMPTY",
+                    _ => null
+                };
+
+                if (label != null)
+                    GUI.Label(rect, label, CellLabelStyle());
             }
 
             if (self != null && x < self.Width && y < self.Height)
@@ -232,6 +256,16 @@ namespace _Game.Data
 
             return value;
         }
+
+        private static GUIStyle _cellLabelStyle;
+
+        private static GUIStyle CellLabelStyle() => _cellLabelStyle ??= new GUIStyle(GUI.skin.label)
+        {
+            alignment = TextAnchor.MiddleCenter,
+            fontStyle = FontStyle.Bold,
+            fontSize = 8,
+            normal = new GUIStyleState { textColor = Color.white }
+        };
 
         private static Color BoardColor(CellType type) => type switch
         {

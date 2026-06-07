@@ -12,6 +12,7 @@ namespace _Game.Data
         public Transform edgeWallPrefab;
         public Transform cornerWallPrefab;
         public VacuumBox vacuumBoxPrefab;
+        public Transform blockPrefab;
 
         [Header("Layout")]
         public float cellSize = 1f;

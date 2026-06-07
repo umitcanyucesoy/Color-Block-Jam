@@ -9,6 +9,7 @@ namespace _Game.Core.Flow
     {
         GameState State { get; }
         float TimeLeft { get; }
+        int LevelIndex { get; }
 
         void Init(ILevelController levelController, IShapeFactory shapeFactory, ISoundService sound);
         void StartLevel();

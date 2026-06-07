@@ -23,6 +23,7 @@ namespace _Game.Core.Control
         private Vector2 _offset;
         private Vector2 _cell;
         private Vector2Int _origin;
+        private Vector3 _dragVelocity;
 
         public void Init(IGridService grid, IMatchController matchController, ISoundService sound)
         {
@@ -49,6 +50,7 @@ namespace _Game.Core.Control
             _shape = e.Shape;
             _origin = _shape.Anchor;
             _cell = _origin;
+            _dragVelocity = Vector3.zero;
 
             var pos = _shape.transform.position;
             _offset = new Vector2(pos.x - e.WorldPoint.x, pos.z - e.WorldPoint.z);
@@ -71,9 +73,15 @@ namespace _Game.Core.Control
 
             if (!_shape) return;
 
+            // Logic resolves to _cell instantly; the visual eases toward it (SmoothDamp) so the
+            // shape follows the cursor softly instead of snapping. Y is owned by the lift tween.
             var world = _grid.CellToWorld(_cell);
-            var pos = _shape.transform.position;
-            _shape.transform.position = new Vector3(world.x, pos.y, world.z);
+            var cur = _shape.transform.position;
+            var target = new Vector3(world.x, cur.y, world.z);
+
+            var smoothed = Vector3.SmoothDamp(cur, target, ref _dragVelocity, _shape.DragSmoothTime);
+            smoothed.y = cur.y;
+            _shape.transform.position = smoothed;
         }
 
         private void OnReleased(ShapeReleasedEvent e)
@@ -133,7 +141,7 @@ namespace _Game.Core.Control
         private bool FootprintFreeContinuous(Vector2 cell)
         {
             var offsets = _shape.Cells;
-            const float shrink = 0.1f; 
+            const float shrink = 0.05f; 
 
             for (int i = 0; i < offsets.Count; i++)
             {

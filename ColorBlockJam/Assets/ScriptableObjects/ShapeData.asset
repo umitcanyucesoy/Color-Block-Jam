@@ -17,4 +17,5 @@ MonoBehaviour:
   liftHeight: 0.2
   liftDuration: 0.1
   dropDuration: 0.12
+  dragSmoothTime: 0.08
   swallowDuration: 0.6

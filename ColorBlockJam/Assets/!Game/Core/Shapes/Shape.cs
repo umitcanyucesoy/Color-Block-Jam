@@ -27,6 +27,7 @@ namespace _Game.Core.Shapes
         public IReadOnlyList<Vector2Int> Cells => _cells;
 
         public float SwallowDuration => data.swallowDuration;
+        public float DragSmoothTime => data.dragSmoothTime;
 
         public void Build(ShapeDefinition definition, ProductionColor color, Vector2Int anchor,
             ShapeRotation rotation, Material material, float cellSize, IPoolService poolService)

@@ -18,6 +18,7 @@ namespace _Game.Core.Factory
         private readonly IVacuumBoxController _vacuums;
         private readonly List<Transform> _edgeWalls = new();
         private readonly List<InteractableBox> _mechanics = new();
+        private readonly List<Transform> _blocks = new();
 
         private Transform _root;
 
@@ -46,6 +47,12 @@ namespace _Game.Core.Factory
                 
                 if (cellType == CellType.Empty || cellType == CellType.Wall || cellType == CellType.VacuumBox)
                     continue;
+
+                if (cellType == CellType.Block)
+                {
+                    CreateBlock(x, y, grid);
+                    continue;
+                }
 
                 CellType topCell = grid.IsInside(x, y - 1) ? level.GetCell(x, y - 1) : CellType.Empty;
                 CellType bottomCell = grid.IsInside(x, y + 1) ? level.GetCell(x, y + 1) : CellType.Empty;
@@ -76,6 +83,15 @@ namespace _Game.Core.Factory
             }
 
             _vacuums.BuildGroups();
+        }
+
+        private void CreateBlock(int x, int y, IGridService grid)
+        {
+            if (!_data.blockPrefab) return;
+            var block = _pool.Get(_data.blockPrefab, _root);
+            block.position = grid.CoordToWorld(x, y);
+            block.rotation = Quaternion.identity;
+            _blocks.Add(block);
         }
 
         private void CreateEdgeWall(int x, int y, float yRotation, IGridService grid)
@@ -117,6 +133,10 @@ namespace _Game.Core.Factory
             for (int i = 0; i < _mechanics.Count; i++)
                 if (_mechanics[i]) _pool.Release(_mechanics[i]);
             _mechanics.Clear();
+
+            for (int i = 0; i < _blocks.Count; i++)
+                if (_blocks[i]) _pool.Release(_blocks[i]);
+            _blocks.Clear();
 
             _vacuums.Clear();
         }

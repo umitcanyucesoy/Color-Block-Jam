@@ -16,5 +16,6 @@ MonoBehaviour:
   edgeWallPrefab: {fileID: 1756235861738672699, guid: a842363a1ca0942d38230beeb17db285, type: 3}
   cornerWallPrefab: {fileID: 1756235861738672699, guid: bb5bef0b8e89f4840a536bd9b4bfec1d, type: 3}
   vacuumBoxPrefab: {fileID: -476581865048342350, guid: 4586d9359e3374a03889a2165d9097ac, type: 3}
-  cellSize: 1.02
+  blockPrefab: {fileID: 1434875921610683719, guid: e6289755e6f6b40fbaaf6cb6ea07c645, type: 3}
+  cellSize: 1.03
   centered: 1

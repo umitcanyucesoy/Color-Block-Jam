@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using _Game.Core.Factory;
 using _Game.Core.Grid;
 using _Game.Data;
@@ -8,7 +7,7 @@ namespace _Game.Core.Level
 {
     public class LevelController : MonoBehaviour, ILevelController
     {
-        [SerializeField] private List<LevelData> levels = new();
+        [SerializeField] private LevelDatabase database;
 
         private IGridService _grid;
         private IShapeFactory _shapeFactory;
@@ -16,7 +15,7 @@ namespace _Game.Core.Level
         private int _index;
 
         public int Index => _index;
-        public LevelData Current => _index >= 0 && _index < levels.Count ? levels[_index] : null;
+        public LevelData Current => database ? database.Get(_index) : null;
 
         public void Init(IGridService grid, IShapeFactory shapeFactory, IEnvironmentFactory envFactory)
         {
@@ -27,13 +26,13 @@ namespace _Game.Core.Level
 
         public void LoadCurrent()
         {
-            if (levels.Count == 0)
+            if (!database || database.Count == 0)
             {
-                Debug.LogError("[LevelController] Level list is empty.");
+                Debug.LogError("[LevelController] Level database is missing or empty.");
                 return;
             }
 
-            var level = levels[_index];
+            var level = database.Get(_index);
 
             _shapeFactory.Clear();
             _envFactory.Clear();
@@ -46,10 +45,10 @@ namespace _Game.Core.Level
 
         public void NextLevel()
         {
-            if (levels.Count == 0)
+            if (!database || database.Count == 0)
                 return;
 
-            _index = (_index + 1) % levels.Count;
+            _index = (_index + 1) % database.Count;
             LoadCurrent();
         }
 
