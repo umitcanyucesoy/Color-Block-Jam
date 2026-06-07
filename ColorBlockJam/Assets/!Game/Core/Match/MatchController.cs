@@ -5,6 +5,7 @@ using _Game.Core.Level;
 using _Game.Core.Pool;
 using _Game.Core.Shapes;
 using _Game.Enums;
+using _Game.Events;
 using DG.Tweening;
 using UnityEngine;
 
@@ -76,6 +77,11 @@ namespace _Game.Core.Match
             {
                 var horizontal = !Mathf.Approximately(probePos.x, currentPos.x);
 
+                // Only swallow if the whole shape fits through the gate: every lane it occupies
+                // (perpendicular to travel) must line up with a matching vacuum at the edge.
+                if (!FitsThroughGate(shape, probePos, hitVacuumCell.Value, horizontal))
+                    return false;
+
                 var vacuumCell = hitVacuumCell.Value;
                 var unitOffset = hitUnitOffset.Value;
                 
@@ -94,6 +100,23 @@ namespace _Game.Core.Match
             }
 
             return false;
+        }
+
+        private bool FitsThroughGate(Shape shape, Vector2 probePos, Vector2Int hitCell, bool horizontal)
+        {
+            var offsets = shape.Cells;
+
+            for (int i = 0; i < offsets.Count; i++)
+            {
+                // Project each cell onto the gate edge (travel coord = hit cell, perpendicular = its lane).
+                int x = horizontal ? hitCell.x : Mathf.RoundToInt(probePos.x + offsets[i].x);
+                int y = horizontal ? Mathf.RoundToInt(probePos.y + offsets[i].y) : hitCell.y;
+
+                if (!IsMatchingVacuum(shape, x, y))
+                    return false;
+            }
+
+            return true;
         }
 
         private bool IsWalkableOrMatchingVacuum(Shape shape, int x, int y)
@@ -143,8 +166,10 @@ namespace _Game.Core.Match
             finalTarget.y = y;
 
             shape.transform.position = startPos;
-            _vacuums.PlaySwallow(vacuumCell);
+            _vacuums.PlaySwallow(vacuumCell, shape.SwallowDuration);
             shape.AnimateSwallow(finalTarget, horizontal);
+
+            EventBus.Publish(new ShapeReturnedEvent { Shape = shape });
         }
     }
 }

@@ -15,4 +15,13 @@ namespace _Game.Events
     }
 
     public struct ShapeReleasedEvent : IEvent { }
+
+    public struct ShapeReturnedEvent : IEvent
+    {
+        public Shape Shape;
+    }
+
+    public struct GameWonEvent : IEvent { }
+
+    public struct GameLostEvent : IEvent { }
 }

@@ -66,14 +66,14 @@ namespace _Game.Core.Interactable
             }
         }
 
-        public void PlaySwallow(Vector2Int vacuumCell)
+        public void PlaySwallow(Vector2Int vacuumCell, float holdDuration)
         {
             if (!_groups.TryGetValue(vacuumCell, out var group))
                 return;
 
             for (int i = 0; i < group.Count; i++)
                 if (group[i])
-                    group[i].AnimateSwallow();
+                    group[i].AnimateSwallow(holdDuration);
         }
 
         public void Clear()

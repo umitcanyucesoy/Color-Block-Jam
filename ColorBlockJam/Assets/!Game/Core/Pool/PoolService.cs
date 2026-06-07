@@ -12,6 +12,7 @@ namespace _Game.Core.Pool
         {
             public GameObject Prefab;
             public Component Component;
+            public bool InPool;
         }
 
         private readonly Dictionary<GameObject, Stack<GameObject>> _available = new();
@@ -37,13 +38,14 @@ namespace _Game.Core.Pool
             {
                 var go = stack.Pop();
                 var pooled = _pooled[go];
-                pooled.Component ??= go.GetComponent<T>(); 
+                pooled.Component ??= go.GetComponent<T>();
+                pooled.InPool = false;
                 component = pooled.Component;
             }
             else
             {
                 component = Object.Instantiate(prefab);
-                _pooled[component.gameObject] = new Pooled { Prefab = key, Component = component };
+                _pooled[component.gameObject] = new Pooled { Prefab = key, Component = component, InPool = false };
             }
 
             component.transform.SetParent(parent, false);
@@ -68,6 +70,10 @@ namespace _Game.Core.Pool
                 Object.Destroy(go);
                 return;
             }
+
+            if (pooled.InPool) // already released — ignore double release
+                return;
+            pooled.InPool = true;
 
             if (instance is IPoolable poolable)
                 poolable.OnDespawn();
@@ -100,7 +106,7 @@ namespace _Game.Core.Pool
                 {
                     var instance = Object.Instantiate(entry.prefab, _root);
                     instance.SetActive(false);
-                    _pooled[instance] = new Pooled { Prefab = entry.prefab, Component = null };
+                    _pooled[instance] = new Pooled { Prefab = entry.prefab, Component = null, InPool = true };
                     stack.Push(instance);
                 }
             }

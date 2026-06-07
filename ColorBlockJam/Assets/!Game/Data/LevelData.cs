@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace _Game.Data
 {
-    [CreateAssetMenu(fileName = "LevelData", menuName = "ColorBlockJam/Level Data", order = 0)]
+    [CreateAssetMenu(fileName = "Level_", menuName = "ColorBlockJam/Level Data", order = 0)]
     public partial class LevelData : SerializedScriptableObject
     {
         [BoxGroup("Dimensions"), MinValue(1), SerializeField]
@@ -13,7 +13,10 @@ namespace _Game.Data
 
         [BoxGroup("Dimensions"), MinValue(1), SerializeField]
         private int height = 5;
-        
+
+        [BoxGroup("Rules"), MinValue(0f), SuffixLabel("sec"), SerializeField]
+        private float duration = 60f;
+
         [PropertyOrder(2), PropertySpace(SpaceBefore = 8)]
         [TableMatrix(SquareCells = true, DrawElementMethod = "DrawCell", HorizontalTitle = "X", VerticalTitle = "Y")]
         [SerializeField]
@@ -28,6 +31,7 @@ namespace _Game.Data
         private List<ShapePlacement> shapes = new();
 
         public IReadOnlyList<ShapePlacement> Shapes => shapes;
+        public float Duration => duration;
         public int Width => cells?.GetLength(0) ?? 0;
         public int Height => cells?.GetLength(1) ?? 0;
         public CellType GetCell(int x, int y) => cells[x, y];

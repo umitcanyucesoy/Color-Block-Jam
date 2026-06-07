@@ -20,6 +20,8 @@ namespace _Game.Core.Factory
         private readonly List<Shape> _shapes = new();
         private Transform _root;
 
+        public int ActiveCount => _shapes.Count;
+
         public ShapeFactory(Shape shapePrefab, ColorPalette palette, IGridService grid, IPoolService pool, ShapeData data)
         {
             _shapePrefab = shapePrefab;

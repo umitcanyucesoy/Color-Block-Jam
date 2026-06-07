@@ -3,6 +3,7 @@ using _Game.Core.Pool;
 using _Game.Data;
 using _Game.Enums;
 using Cysharp.Threading.Tasks;
+using DG.Tweening;
 using UnityEngine;
 
 namespace _Game.Core.Shapes
@@ -24,6 +25,8 @@ namespace _Game.Core.Shapes
         public Vector2Int Size { get; private set; }
 
         public IReadOnlyList<Vector2Int> Cells => _cells;
+
+        public float SwallowDuration => data.swallowDuration;
 
         public void Build(ShapeDefinition definition, ShapeColor color, Vector2Int anchor,
             ShapeRotation rotation, Material material, float cellSize, IPoolService poolService)
@@ -58,6 +61,8 @@ namespace _Game.Core.Shapes
 
         public virtual void OnDespawn()
         {
+            transform.DOKill();
+
             if (units == null)
                 return;
 

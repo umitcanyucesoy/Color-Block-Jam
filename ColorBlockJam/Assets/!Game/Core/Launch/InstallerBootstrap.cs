@@ -1,6 +1,7 @@
 using _Game.Core.Cameras;
 using _Game.Core.Control;
 using _Game.Core.Factory;
+using _Game.Core.Flow;
 using _Game.Core.Grid;
 using _Game.Core.Input;
 using _Game.Core.Interactable;
@@ -8,6 +9,7 @@ using _Game.Core.Level;
 using _Game.Core.Match;
 using _Game.Core.Pool;
 using _Game.Core.Shapes;
+using _Game.Core.UI;
 using _Game.Data;
 using _Game.Services;
 using UnityEngine;
@@ -31,6 +33,8 @@ namespace _Game.Core.Launch
         [SerializeField] private ShapeController shapeController;
         [SerializeField] private MatchController matchController;
         [SerializeField] private VacuumBoxController vacuumBoxController;
+        [SerializeField] private GameFlowController gameFlowController;
+        [SerializeField] private UIController uiController;
 
         private IPoolService _poolService;
         private ICameraController _cameraController;
@@ -42,6 +46,8 @@ namespace _Game.Core.Launch
         private ILevelController _levelController;
         private IMatchController _matchController;
         private IVacuumBoxController _vacuumBoxController;
+        private IGameFlowController _gameFlowController;
+        private IUIController _uiController;
 
         private void Awake()
         {
@@ -73,6 +79,8 @@ namespace _Game.Core.Launch
             _shapeController = shapeController;
             _matchController = matchController;
             _vacuumBoxController = vacuumBoxController;
+            _gameFlowController = gameFlowController;
+            _uiController = uiController;
 
             _poolService = new PoolService(poolData);
             ServiceLocator.Register(_poolService);
@@ -100,7 +108,10 @@ namespace _Game.Core.Launch
         {
             _matchController.Init(_gridService, _levelController, _poolService, _vacuumBoxController);
             _shapeController.Init(_gridService, _matchController);
-            _levelController.LoadCurrent();
+
+            _gameFlowController.Init(_levelController, _shapeFactory);
+            _uiController.Init(_gameFlowController);
+            _gameFlowController.StartLevel();
         }
     }
 }
