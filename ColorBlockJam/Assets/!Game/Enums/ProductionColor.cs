@@ -1,6 +1,6 @@
 namespace _Game.Enums
 {
-    public enum ShapeColor
+    public enum ProductionColor
     {
         None = 0,
         Red = 1,

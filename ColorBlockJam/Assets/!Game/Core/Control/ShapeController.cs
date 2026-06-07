@@ -1,8 +1,10 @@
 using System.Collections.Generic;
+using _Game.Core.Audio;
 using _Game.Core.Grid;
 using _Game.Core.Match;
 using _Game.Core.Shapes;
 using _Game.Data;
+using _Game.Enums;
 using _Game.Events;
 using DG.Tweening;
 using UnityEngine;
@@ -15,16 +17,18 @@ namespace _Game.Core.Control
 
         private readonly List<Vector2Int> _buffer = new();
         private IGridService _grid;
-        private IMatchController _matchController; 
+        private IMatchController _matchController;
+        private ISoundService _sound;
         private Shape _shape;
         private Vector2 _offset;
         private Vector2 _cell;
         private Vector2Int _origin;
 
-        public void Init(IGridService grid, IMatchController matchController)
+        public void Init(IGridService grid, IMatchController matchController, ISoundService sound)
         {
             _grid = grid;
             _matchController = matchController;
+            _sound = sound;
 
             EventBus.Subscribe<ShapeGrabbedEvent>(OnGrabbed);
             EventBus.Subscribe<ShapeDraggedEvent>(OnDragged);
@@ -50,6 +54,7 @@ namespace _Game.Core.Control
             _offset = new Vector2(pos.x - e.WorldPoint.x, pos.z - e.WorldPoint.z);
 
             _shape.AnimateLift();
+            _sound.Play(SoundId.Lift);
         }
 
         private void OnDragged(ShapeDraggedEvent e)
@@ -85,6 +90,7 @@ namespace _Game.Core.Control
 
             var world = _grid.CoordToWorld(target.x, target.y);
             _shape.AnimateDrop(world);
+            _sound.Play(SoundId.Snap);
             _shape = null;
         }
 

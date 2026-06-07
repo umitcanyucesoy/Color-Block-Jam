@@ -23,7 +23,7 @@ namespace _Game.Data
         private CellType[,] cells;
         
         [HideInInspector, SerializeField]
-        private ShapeColor[,] cellColors;
+        private ProductionColor[,] cellColors;
 
         [PropertyOrder(3), PropertySpace(SpaceBefore = 12), Title("Shapes")]
         [ListDrawerSettings(ShowFoldout = true, CustomAddFunction = nameof(AddNewShape))]
@@ -35,14 +35,14 @@ namespace _Game.Data
         public int Width => cells?.GetLength(0) ?? 0;
         public int Height => cells?.GetLength(1) ?? 0;
         public CellType GetCell(int x, int y) => cells[x, y];
-        public ShapeColor GetCellColor(int x, int y) => cellColors != null && x < Width && y < Height ? 
-            cellColors[x, y] : ShapeColor.None;
+        public ProductionColor GetCellColor(int x, int y) => cellColors != null && x < Width && y < Height ? 
+            cellColors[x, y] : ProductionColor.None;
 
         [Button(ButtonSizes.Medium), PropertyOrder(1), PropertySpace(SpaceBefore = 8)]
         private void ResizeMatrix()
         {
             var resizedCells = new CellType[width, height];
-            var resizedColors = new ShapeColor[width, height]; 
+            var resizedColors = new ProductionColor[width, height]; 
 
             if (cells != null)
             {
@@ -75,7 +75,7 @@ namespace _Game.Data
         private void EnsureMatrix()
         {
             cells ??= new CellType[width, height];
-            cellColors ??= new ShapeColor[width, height];
+            cellColors ??= new ProductionColor[width, height];
         }
     }
 }

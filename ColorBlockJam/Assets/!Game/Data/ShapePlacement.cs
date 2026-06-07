@@ -8,7 +8,7 @@ namespace _Game.Data
     public class ShapePlacement
     {
         public ShapeDefinition definition;
-        public ShapeColor color = ShapeColor.None;
+        public ProductionColor color = ProductionColor.None;
         public Vector2Int anchor;
         public ShapeRotation rotation;
     }

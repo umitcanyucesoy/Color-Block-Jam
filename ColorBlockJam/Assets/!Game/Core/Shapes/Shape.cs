@@ -19,7 +19,7 @@ namespace _Game.Core.Shapes
         private readonly List<Vector2Int> _cells = new();
 
         public ShapeDefinition Definition { get; private set; }
-        public ShapeColor Color { get; private set; }
+        public ProductionColor Color { get; private set; }
         public Vector2Int Anchor { get; private set; }
         public ShapeRotation Rotation { get; private set; }
         public Vector2Int Size { get; private set; }
@@ -28,7 +28,7 @@ namespace _Game.Core.Shapes
 
         public float SwallowDuration => data.swallowDuration;
 
-        public void Build(ShapeDefinition definition, ShapeColor color, Vector2Int anchor,
+        public void Build(ShapeDefinition definition, ProductionColor color, Vector2Int anchor,
             ShapeRotation rotation, Material material, float cellSize, IPoolService poolService)
         {
             Definition = definition;

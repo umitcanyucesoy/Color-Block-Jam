@@ -1,3 +1,4 @@
+using _Game.Core.Audio;
 using _Game.Core.Cameras;
 using _Game.Core.Control;
 using _Game.Core.Factory;
@@ -18,16 +19,14 @@ namespace _Game.Core.Launch
 {
     public class InstallerBootstrap : MonoBehaviour
     {
-        [Header("Configs")]
+        [Header("SO Injection")]
         [SerializeField] private GridData gridData;
         [SerializeField] private ColorPalette colorPalette;
         [SerializeField] private PoolData poolData;
         [SerializeField] private ShapeData shapeData;
+        [SerializeField] private SoundData soundData;
 
-        [Header("Prefabs")]
-        [SerializeField] private Shape shapePrefab;
-
-        [Header("Controllers")]
+        [Header("Component Injection")]
         [SerializeField] private CameraController cameraController;
         [SerializeField] private LevelController levelController;
         [SerializeField] private ShapeController shapeController;
@@ -48,6 +47,7 @@ namespace _Game.Core.Launch
         private IVacuumBoxController _vacuumBoxController;
         private IGameFlowController _gameFlowController;
         private IUIController _uiController;
+        private ISoundService _soundService;
 
         private void Awake()
         {
@@ -70,6 +70,7 @@ namespace _Game.Core.Launch
             ServiceLocator.Unregister<IInputService>();
             ServiceLocator.Unregister<ICameraController>();
             ServiceLocator.Unregister<IPoolService>();
+            ServiceLocator.Unregister<ISoundService>();
         }
 
         private void InstallServices()
@@ -85,6 +86,9 @@ namespace _Game.Core.Launch
             _poolService = new PoolService(poolData);
             ServiceLocator.Register(_poolService);
 
+            _soundService = new SoundService(soundData);
+            ServiceLocator.Register(_soundService);
+
             _cameraController = cameraController;
             ServiceLocator.Register(_cameraController);
 
@@ -97,7 +101,7 @@ namespace _Game.Core.Launch
             _environmentFactory = new EnvironmentFactory(gridData, _poolService, colorPalette, _vacuumBoxController);
             ServiceLocator.Register(_environmentFactory);
 
-            _shapeFactory = new ShapeFactory(shapePrefab, colorPalette, _gridService, _poolService, shapeData);
+            _shapeFactory = new ShapeFactory(colorPalette, _gridService, _poolService, shapeData);
             ServiceLocator.Register(_shapeFactory);
             
             _levelController.Init(_gridService, _shapeFactory, _environmentFactory);
@@ -106,10 +110,10 @@ namespace _Game.Core.Launch
 
         private void InstallGame()
         {
-            _matchController.Init(_gridService, _levelController, _poolService, _vacuumBoxController);
-            _shapeController.Init(_gridService, _matchController);
+            _matchController.Init(_gridService, _levelController, _poolService, _vacuumBoxController, _soundService);
+            _shapeController.Init(_gridService, _matchController, _soundService);
 
-            _gameFlowController.Init(_levelController, _shapeFactory);
+            _gameFlowController.Init(_levelController, _shapeFactory, _soundService);
             _uiController.Init(_gameFlowController);
             _gameFlowController.StartLevel();
         }

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using _Game.Core.Audio;
 using _Game.Core.Grid;
 using _Game.Core.Interactable;
 using _Game.Core.Level;
@@ -17,13 +18,15 @@ namespace _Game.Core.Match
         private ILevelController _levelController;
         private IPoolService _pool;
         private IVacuumBoxController _vacuums;
+        private ISoundService _sound;
 
-        public void Init(IGridService grid, ILevelController levelController, IPoolService pool, IVacuumBoxController vacuums)
+        public void Init(IGridService grid, ILevelController levelController, IPoolService pool, IVacuumBoxController vacuums, ISoundService sound)
         {
             _grid = grid;
             _levelController = levelController;
             _pool = pool;
             _vacuums = vacuums;
+            _sound = sound;
         }
 
         public bool IsDraggable(Shape shape, int x, int y)
@@ -167,6 +170,7 @@ namespace _Game.Core.Match
 
             shape.transform.position = startPos;
             _vacuums.PlaySwallow(vacuumCell, shape.SwallowDuration);
+            _sound.Play(SoundId.Swallow);
             shape.AnimateSwallow(finalTarget, horizontal);
 
             EventBus.Publish(new ShapeReturnedEvent { Shape = shape });

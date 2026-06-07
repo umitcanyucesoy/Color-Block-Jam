@@ -9,9 +9,9 @@ namespace _Game.Core.Interactable
         private readonly struct Entry
         {
             public readonly VacuumBox Box;
-            public readonly ShapeColor Color;
+            public readonly ProductionColor Color;
 
-            public Entry(VacuumBox box, ShapeColor color)
+            public Entry(VacuumBox box, ProductionColor color)
             {
                 Box = box;
                 Color = color;
@@ -27,7 +27,7 @@ namespace _Game.Core.Interactable
         private readonly Dictionary<Vector2Int, List<VacuumBox>> _groups = new();
         private readonly Queue<Vector2Int> _frontier = new();
 
-        public void Register(Vector2Int vacuumCell, VacuumBox box, ShapeColor color) => _boxes[vacuumCell] = new Entry(box, color);
+        public void Register(Vector2Int vacuumCell, VacuumBox box, ProductionColor color) => _boxes[vacuumCell] = new Entry(box, color);
 
         public void BuildGroups()
         {

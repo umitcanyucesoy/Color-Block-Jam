@@ -8,9 +8,9 @@ namespace _Game.Data
     [CreateAssetMenu(fileName = "ColorPalette", menuName = "ColorBlockJam/Color Palette", order = 3)]
     public class ColorPalette : SerializedScriptableObject
     {
-        [SerializeField] private Dictionary<ShapeColor, Material> materials = new();
+        [SerializeField] private Dictionary<ProductionColor, Material> materials = new();
 
-        public Material GetMaterial(ShapeColor color)
+        public Material GetMaterial(ProductionColor color)
         {
             if (materials.TryGetValue(color, out var material))
                 return material;

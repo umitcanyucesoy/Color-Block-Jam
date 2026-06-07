@@ -10,8 +10,7 @@ namespace _Game.Core.Factory
     public class ShapeFactory : IShapeFactory
     {
         private const string RootName = "[ShapeRoot]";
-
-        private readonly Shape _shapePrefab;
+        
         private readonly ColorPalette _palette;
         private readonly IGridService _grid;
         private readonly IPoolService _pool;
@@ -22,9 +21,8 @@ namespace _Game.Core.Factory
 
         public int ActiveCount => _shapes.Count;
 
-        public ShapeFactory(Shape shapePrefab, ColorPalette palette, IGridService grid, IPoolService pool, ShapeData data)
+        public ShapeFactory(ColorPalette palette, IGridService grid, IPoolService pool, ShapeData data)
         {
-            _shapePrefab = shapePrefab;
             _palette = palette;
             _grid = grid;
             _pool = pool;
@@ -33,7 +31,7 @@ namespace _Game.Core.Factory
 
         public void BuildLevel(LevelData level)
         {
-            if (_grid == null || _pool == null || !level || !_shapePrefab || !_palette)
+            if (_grid == null || _pool == null || !level || !_data.shapePrefab || !_palette)
             {
                 Debug.LogError("[ShapeFactory] Missing dependency.");
                 return;
@@ -62,7 +60,7 @@ namespace _Game.Core.Factory
                 return null;
 
             var material = _palette.GetMaterial(placement.color);
-            var shape = _pool.Get(_shapePrefab, _root);
+            var shape = _pool.Get(_data.shapePrefab, _root);
 
             shape.Build(placement.definition, placement.color, placement.anchor, placement.rotation, material, _grid.CellSize, _pool);
             var world = _grid.CoordToWorld(placement.anchor.x, placement.anchor.y);

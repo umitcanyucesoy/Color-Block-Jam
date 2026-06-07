@@ -96,7 +96,7 @@ namespace _Game.Core.Factory
             _edgeWalls.Add(wall);
         }
 
-        private void CreateVacuumBox(int x, int y, Vector2Int vacuumCell, float yRotation, IGridService grid, ShapeColor color)
+        private void CreateVacuumBox(int x, int y, Vector2Int vacuumCell, float yRotation, IGridService grid, ProductionColor color)
         {
             if (!_data.vacuumBoxPrefab) return;
             var vacuum = _pool.Get(_data.vacuumBoxPrefab, _root);

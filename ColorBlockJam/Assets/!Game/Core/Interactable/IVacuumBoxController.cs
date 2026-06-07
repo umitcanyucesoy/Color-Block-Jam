@@ -5,7 +5,7 @@ namespace _Game.Core.Interactable
 {
     public interface IVacuumBoxController
     {
-        void Register(Vector2Int vacuumCell, VacuumBox box, ShapeColor color);
+        void Register(Vector2Int vacuumCell, VacuumBox box, ProductionColor color);
         void BuildGroups();
         void PlaySwallow(Vector2Int vacuumCell, float holdDuration);
         void Clear();

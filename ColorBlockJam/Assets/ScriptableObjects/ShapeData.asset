@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c505d80deb45b4445abde28e4bb3e2c7, type: 3}
   m_Name: ShapeData
   m_EditorClassIdentifier: Assembly-CSharp::_Game.Data.ShapeData
+  shapePrefab: {fileID: -1948016462316679141, guid: c0f45a4b9316946838888a9f478a353b, type: 3}
   yOffset: 0.25
   liftHeight: 0.2
   liftDuration: 0.1
   dropDuration: 0.12
   swallowDuration: 0.6
-  swallowDepth: 0.5

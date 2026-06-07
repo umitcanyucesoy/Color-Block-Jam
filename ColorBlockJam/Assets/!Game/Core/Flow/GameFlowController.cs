@@ -1,3 +1,4 @@
+using _Game.Core.Audio;
 using _Game.Core.Factory;
 using _Game.Core.Level;
 using _Game.Enums;
@@ -10,16 +11,18 @@ namespace _Game.Core.Flow
     {
         private ILevelController _levelController;
         private IShapeFactory _shapeFactory;
+        private ISoundService _sound;
         private int _remaining;
         private float _timeLeft;
 
         public GameState State { get; private set; }
         public float TimeLeft => Mathf.Max(0f, _timeLeft);
 
-        public void Init(ILevelController levelController, IShapeFactory shapeFactory)
+        public void Init(ILevelController levelController, IShapeFactory shapeFactory, ISoundService sound)
         {
             _levelController = levelController;
             _shapeFactory = shapeFactory;
+            _sound = sound;
 
             EventBus.Subscribe<ShapeReturnedEvent>(OnShapeReturned);
         }
@@ -82,12 +85,14 @@ namespace _Game.Core.Flow
         private void Win()
         {
             State = GameState.Won;
+            _sound.Play(SoundId.Win);
             EventBus.Publish(new GameWonEvent());
         }
 
         private void Lose()
         {
             State = GameState.Lost;
+            _sound.Play(SoundId.Lose);
             EventBus.Publish(new GameLostEvent());
         }
     }

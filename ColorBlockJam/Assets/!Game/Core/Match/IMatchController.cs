@@ -1,3 +1,4 @@
+using _Game.Core.Audio;
 using _Game.Core.Grid;
 using _Game.Core.Interactable;
 using _Game.Core.Level;
@@ -9,7 +10,7 @@ namespace _Game.Core.Match
 {
     public interface IMatchController
     {
-        void Init(IGridService grid, ILevelController levelController, IPoolService pool, IVacuumBoxController vacuums);
+        void Init(IGridService grid, ILevelController levelController, IPoolService pool, IVacuumBoxController vacuums, ISoundService sound);
         bool IsDraggable(Shape shape, int x, int y);
         bool TrySwallow(Shape shape, Vector2 currentPos, Vector2 probePos);
     }

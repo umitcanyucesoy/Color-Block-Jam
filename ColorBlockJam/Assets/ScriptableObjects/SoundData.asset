@@ -1,0 +1,30 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: baafa50221e68420ea7b37d757552144, type: 3}
+  m_Name: SoundData
+  m_EditorClassIdentifier: Assembly-CSharp::_Game.Data.SoundData
+  sounds:
+  - id: 1
+    clip: {fileID: 8300000, guid: e5d4c025a593048528e9d92bbf1028f1, type: 3}
+    volume: 0.205
+  - id: 2
+    clip: {fileID: 8300000, guid: 3e4ced89b902b427fa7a72dc133fa79f, type: 3}
+    volume: 0.212
+  - id: 3
+    clip: {fileID: 8300000, guid: 869948a654f7b4eea900ec759f19cf24, type: 3}
+    volume: 0.212
+  - id: 4
+    clip: {fileID: 8300000, guid: 8afa40a96b33b4fc6b177e1ef6f31e60, type: 3}
+    volume: 0.301
+  - id: 5
+    clip: {fileID: 8300000, guid: 6141d9a7dd4b94134a862e09b1336cf2, type: 3}
+    volume: 0.304

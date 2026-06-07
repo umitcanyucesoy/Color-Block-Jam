@@ -145,15 +145,15 @@ namespace _Game.Data
                     {
                         if (e.shift && value == CellType.VacuumBox)
                         {
-                            ShapeColor? paintColor = e.keyCode switch
+                            ProductionColor? paintColor = e.keyCode switch
                             {
-                                KeyCode.Keypad0 or KeyCode.Alpha0 => ShapeColor.None,
-                                KeyCode.Keypad1 or KeyCode.Alpha1 => ShapeColor.Red,
-                                KeyCode.Keypad2 or KeyCode.Alpha2 => ShapeColor.Blue,
-                                KeyCode.Keypad3 or KeyCode.Alpha3 => ShapeColor.Green,
-                                KeyCode.Keypad4 or KeyCode.Alpha4 => ShapeColor.Yellow,
-                                KeyCode.Keypad5 or KeyCode.Alpha5 => ShapeColor.Orange,
-                                KeyCode.Keypad6 or KeyCode.Alpha6 => ShapeColor.Purple,
+                                KeyCode.Keypad0 or KeyCode.Alpha0 => ProductionColor.None,
+                                KeyCode.Keypad1 or KeyCode.Alpha1 => ProductionColor.Red,
+                                KeyCode.Keypad2 or KeyCode.Alpha2 => ProductionColor.Blue,
+                                KeyCode.Keypad3 or KeyCode.Alpha3 => ProductionColor.Green,
+                                KeyCode.Keypad4 or KeyCode.Alpha4 => ProductionColor.Yellow,
+                                KeyCode.Keypad5 or KeyCode.Alpha5 => ProductionColor.Orange,
+                                KeyCode.Keypad6 or KeyCode.Alpha6 => ProductionColor.Purple,
                                 _ => null
                             };
 
@@ -181,7 +181,7 @@ namespace _Game.Data
                                 value = paintType.Value;
                                 
                                 if (value != CellType.VacuumBox) 
-                                    self.cellColors[x, y] = ShapeColor.None;
+                                    self.cellColors[x, y] = ProductionColor.None;
 
                                 GUI.changed = true;
                                 e.Use();
@@ -204,8 +204,8 @@ namespace _Game.Data
 
             if (value == CellType.VacuumBox)
             {
-                var vColor = self != null ? self.cellColors[x, y] : ShapeColor.None;
-                Color innerColor = vColor == ShapeColor.None ? VacuumInnerColor : ShapeToColor(vColor);
+                var vColor = self != null ? self.cellColors[x, y] : ProductionColor.None;
+                Color innerColor = vColor == ProductionColor.None ? VacuumInnerColor : ShapeToColor(vColor);
                 
                 EditorGUI.DrawRect(Inset(rect, BasePadding + 2.5f), innerColor);
                 
@@ -242,14 +242,14 @@ namespace _Game.Data
             _ => EmptyColor
         };
 
-        private static Color ShapeToColor(ShapeColor color) => color switch
+        private static Color ShapeToColor(ProductionColor color) => color switch
         {
-            ShapeColor.Red => new Color(0.85f, 0.25f, 0.25f),
-            ShapeColor.Blue => new Color(0.25f, 0.45f, 0.85f),
-            ShapeColor.Green => new Color(0.25f, 0.75f, 0.35f),
-            ShapeColor.Yellow => new Color(0.90f, 0.80f, 0.20f),
-            ShapeColor.Orange => new Color(0.95f, 0.55f, 0.20f),
-            ShapeColor.Purple => new Color(0.65f, 0.35f, 0.80f),
+            ProductionColor.Red => new Color(0.85f, 0.25f, 0.25f),
+            ProductionColor.Blue => new Color(0.25f, 0.45f, 0.85f),
+            ProductionColor.Green => new Color(0.25f, 0.75f, 0.35f),
+            ProductionColor.Yellow => new Color(0.90f, 0.80f, 0.20f),
+            ProductionColor.Orange => new Color(0.95f, 0.55f, 0.20f),
+            ProductionColor.Purple => new Color(0.65f, 0.35f, 0.80f),
             _ => Color.gray
         };
 
