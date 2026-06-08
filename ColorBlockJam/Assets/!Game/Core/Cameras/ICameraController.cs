@@ -7,5 +7,7 @@ namespace _Game.Core.Cameras
     {
         Camera Camera { get; }
         LayerMask InteractionMask { get; }
+
+        void ApplyWidth(int width);
     }
 }

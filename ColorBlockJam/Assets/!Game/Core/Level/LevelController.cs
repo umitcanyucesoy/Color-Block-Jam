@@ -1,3 +1,4 @@
+using _Game.Core.Cameras;
 using _Game.Core.Factory;
 using _Game.Core.Grid;
 using _Game.Data;
@@ -12,16 +13,18 @@ namespace _Game.Core.Level
         private IGridService _grid;
         private IShapeFactory _shapeFactory;
         private IEnvironmentFactory _envFactory;
+        private ICameraController _camera;
         private int _index;
 
         public int Index => _index;
         public LevelData Current => database ? database.Get(_index) : null;
 
-        public void Init(IGridService grid, IShapeFactory shapeFactory, IEnvironmentFactory envFactory)
+        public void Init(IGridService grid, IShapeFactory shapeFactory, IEnvironmentFactory envFactory, ICameraController cameraController)
         {
             _grid = grid;
             _shapeFactory = shapeFactory;
             _envFactory = envFactory;
+            _camera = cameraController;
         }
 
         public void LoadCurrent()
@@ -41,6 +44,8 @@ namespace _Game.Core.Level
             _grid.Build(level);
             _envFactory.Build(level, _grid);
             _shapeFactory.BuildLevel(level);
+
+            _camera.ApplyWidth(level.Width);
         }
 
         public void NextLevel()

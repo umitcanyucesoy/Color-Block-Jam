@@ -1,0 +1,58 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &3015474288611756847
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 7697455866105598231}
+  - component: {fileID: 3219998273649742743}
+  m_Layer: 0
+  m_Name: InstallerBootstrap
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &7697455866105598231
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3015474288611756847}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &3219998273649742743
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3015474288611756847}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 194abc30531404092acd56f359557050, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::_Game.Core.Launch.InstallerBootstrap
+  gridData: {fileID: 11400000, guid: b9437422bacc44acfb6b06e44ed6406a, type: 2}
+  colorPalette: {fileID: 11400000, guid: e0a9db89774024f42867fc0c734f5a5d, type: 2}
+  poolData: {fileID: 11400000, guid: b324868f106454ee19bcb0e361748c90, type: 2}
+  shapeData: {fileID: 11400000, guid: 409893112dfe14124b1f9593450ab3cf, type: 2}
+  soundData: {fileID: 11400000, guid: 1c94d82963afb4371aa25ed501e1d769, type: 2}
+  cameraController: {fileID: 0}
+  levelController: {fileID: 0}
+  shapeController: {fileID: 0}
+  matchController: {fileID: 0}
+  vacuumBoxController: {fileID: 0}
+  gameFlowController: {fileID: 0}
+  uiController: {fileID: 0}

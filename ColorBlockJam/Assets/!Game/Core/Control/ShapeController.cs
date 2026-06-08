@@ -73,8 +73,7 @@ namespace _Game.Core.Control
 
             if (!_shape) return;
 
-            // Logic resolves to _cell instantly; the visual eases toward it (SmoothDamp) so the
-            // shape follows the cursor softly instead of snapping. Y is owned by the lift tween.
+
             var world = _grid.CellToWorld(_cell);
             var cur = _shape.transform.position;
             var target = new Vector3(world.x, cur.y, world.z);
@@ -120,7 +119,7 @@ namespace _Game.Core.Control
 
             while (Mathf.Abs(target - value) > 0.0001f)
             {
-                float next = value + dir * Mathf.Min(SubStep, Mathf.Abs(target - value));
+                var next = value + dir * Mathf.Min(SubStep, Mathf.Abs(target - value));
                 var probe = xAxis ? new Vector2(next, from.y) : new Vector2(from.x, next);
 
                 if (!FootprintFreeContinuous(probe))

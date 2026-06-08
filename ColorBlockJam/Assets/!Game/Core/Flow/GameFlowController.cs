@@ -17,7 +17,7 @@ namespace _Game.Core.Flow
 
         public GameState State { get; private set; }
         public float TimeLeft => Mathf.Max(0f, _timeLeft);
-        public int LevelIndex => _levelController != null ? _levelController.Index : 0;
+        public int LevelIndex => _levelController?.Index ?? 0;
 
         public void Init(ILevelController levelController, IShapeFactory shapeFactory, ISoundService sound)
         {

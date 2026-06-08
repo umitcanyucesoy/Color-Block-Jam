@@ -104,7 +104,7 @@ namespace _Game.Core.Launch
             _shapeFactory = new ShapeFactory(colorPalette, _gridService, _poolService, shapeData);
             ServiceLocator.Register(_shapeFactory);
             
-            _levelController.Init(_gridService, _shapeFactory, _environmentFactory);
+            _levelController.Init(_gridService, _shapeFactory, _environmentFactory, _cameraController);
             ServiceLocator.Register(_levelController);
         }
 

@@ -16,7 +16,7 @@ namespace _Game.Data
         public float liftHeight = 0.4f; 
         public float liftDuration = 0.1f;
         public float dropDuration = 0.12f;
-        public float dragSmoothTime = 0.06f; // SmoothDamp time for how softly the shape follows the cursor while dragging.
+        public float dragSmoothTime = 0.06f; 
         
         [Header("Swallow")]
         public float swallowDuration = 0.35f;

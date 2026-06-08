@@ -7,7 +7,6 @@ namespace _Game.Core.Flow
 {
     public interface IGameFlowController
     {
-        GameState State { get; }
         float TimeLeft { get; }
         int LevelIndex { get; }
 

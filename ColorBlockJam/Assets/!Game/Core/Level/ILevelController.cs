@@ -1,3 +1,4 @@
+using _Game.Core.Cameras;
 using _Game.Core.Factory;
 using _Game.Core.Grid;
 using _Game.Data;
@@ -10,7 +11,7 @@ namespace _Game.Core.Level
         int Index { get; }
         LevelData Current { get; }
 
-        void Init(IGridService gridService, IShapeFactory shapeFactory, IEnvironmentFactory environmentFactory);
+        void Init(IGridService gridService, IShapeFactory shapeFactory, IEnvironmentFactory environmentFactory, ICameraController cameraController);
         void LoadCurrent();
         void NextLevel();
         void RetryLevel();

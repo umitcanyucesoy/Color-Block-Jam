@@ -71,7 +71,7 @@ namespace _Game.Core.Pool
                 return;
             }
 
-            if (pooled.InPool) // already released — ignore double release
+            if (pooled.InPool) 
                 return;
             pooled.InPool = true;
 

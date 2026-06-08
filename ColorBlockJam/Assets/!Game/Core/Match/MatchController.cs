@@ -80,8 +80,6 @@ namespace _Game.Core.Match
             {
                 var horizontal = !Mathf.Approximately(probePos.x, currentPos.x);
 
-                // Only swallow if the whole shape fits through the gate: every lane it occupies
-                // (perpendicular to travel) must line up with a matching vacuum at the edge.
                 if (!FitsThroughGate(shape, probePos, hitVacuumCell.Value, horizontal))
                     return false;
 
@@ -111,7 +109,6 @@ namespace _Game.Core.Match
 
             for (int i = 0; i < offsets.Count; i++)
             {
-                // Project each cell onto the gate edge (travel coord = hit cell, perpendicular = its lane).
                 int x = horizontal ? hitCell.x : Mathf.RoundToInt(probePos.x + offsets[i].x);
                 int y = horizontal ? Mathf.RoundToInt(probePos.y + offsets[i].y) : hitCell.y;
 

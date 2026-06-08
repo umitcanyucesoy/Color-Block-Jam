@@ -128,9 +128,9 @@ namespace _Game.Core.Grid
         public Vector2 WorldToCell(Vector3 world)
         {
             var local = _root ? _root.InverseTransformPoint(world) : world;
-            float step = _data.cellSize;
-            float fx = local.x / step;
-            float fz = local.z / step;
+            var step = _data.cellSize;
+            var fx = local.x / step;
+            var fz = local.z / step;
 
             if (_data.centered)
             {
